@@ -84,6 +84,8 @@ export const translations: Record<Lang, Record<string, string>> = {
     consentText: "Nõustun oma isikuandmete töötlemisega selle päringu käsitlemise eesmärgil.",
     submitButton: "Saada päring",
     successMessage: "Täname teid sõnumi eest. Võtame teiega peagi ühendust.",
+    errorTitle: "Viga",
+    errorMessage: "Midagi läks valesti. Palun proovige hiljem uuesti.",
 
     footerRights: "Kõik õigused kaitstud.",
   },
