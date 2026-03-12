@@ -42,6 +42,8 @@ export const translations: Record<Lang, Record<string, string>> = {
     consentText: "I agree to the processing of my personal data for the purpose of handling this inquiry.",
     submitButton: "Send Request",
     successMessage: "Thank you for your message. We will contact you shortly.",
+    errorTitle: "Error",
+    errorMessage: "Something went wrong. Please try again later.",
 
     // Footer
     footerRights: "All rights reserved.",
@@ -82,6 +84,8 @@ export const translations: Record<Lang, Record<string, string>> = {
     consentText: "Nõustun oma isikuandmete töötlemisega selle päringu käsitlemise eesmärgil.",
     submitButton: "Saada päring",
     successMessage: "Täname teid sõnumi eest. Võtame teiega peagi ühendust.",
+    errorTitle: "Viga",
+    errorMessage: "Midagi läks valesti. Palun proovige hiljem uuesti.",
 
     footerRights: "Kõik õigused kaitstud.",
   },
@@ -121,6 +125,8 @@ export const translations: Record<Lang, Record<string, string>> = {
     consentText: "Я согласен на обработку моих персональных данных с целью обработки данного запроса.",
     submitButton: "Отправить запрос",
     successMessage: "Спасибо за ваше сообщение. Мы свяжемся с вами в ближайшее время.",
+    errorTitle: "Ошибка",
+    errorMessage: "Что-то пошло не так. Пожалуйста, попробуйте позже.",
 
     footerRights: "Все права защищены.",
   },
@@ -160,6 +166,8 @@ export const translations: Record<Lang, Record<string, string>> = {
     consentText: "Piekrītu savu personas datu apstrādei šī pieprasījuma izskatīšanas nolūkā.",
     submitButton: "Nosūtīt pieprasījumu",
     successMessage: "Paldies par jūsu ziņojumu. Mēs ar jums sazināsimies tuvākajā laikā.",
+    errorTitle: "Kļūda",
+    errorMessage: "Kaut kas nogāja greizi. Lūdzu, mēģiniet vēlāk.",
 
     footerRights: "Visas tiesības aizsargātas.",
   },

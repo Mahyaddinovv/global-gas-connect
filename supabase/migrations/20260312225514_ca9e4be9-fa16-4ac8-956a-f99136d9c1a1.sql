@@ -1,0 +1,1 @@
+ALTER TABLE public.inquiries ENABLE ROW LEVEL SECURITY;
