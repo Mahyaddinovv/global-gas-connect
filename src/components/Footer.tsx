@@ -13,6 +13,9 @@ const Footer = () => {
           <a href="#contact" className="hover:text-foreground transition-colors">{t("navContact")}</a>
         </div>
       </div>
+      <div className="mt-6 py-3 bg-muted/60 text-center text-xs text-muted-foreground">
+        Built in AI Web Session 2026 | ClearContent CMS | Student: Mahammad Mahyaddinov | Team: mahammad-m
+      </div>
     </footer>
   );
 };

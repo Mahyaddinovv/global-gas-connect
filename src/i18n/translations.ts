@@ -126,7 +126,7 @@ export const translations: Record<Lang, Record<string, string>> = {
   },
   LV: {
     navAbout: "Par mums",
-    navServices: "Pakalpojumi",
+    navServices: "Ko mēs piedāvājam",
     navContact: "Kontakti",
 
     heroTitle: "Uzticams aukstumaģentu tirdzniecības partneris",
