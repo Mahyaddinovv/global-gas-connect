@@ -87,7 +87,7 @@ export const translations: Record<Lang, Record<string, string>> = {
   },
   RU: {
     navAbout: "О нас",
-    navServices: "Услуги",
+    navServices: "Что мы предлагаем",
     navContact: "Контакты",
 
     heroTitle: "Надёжный партнёр по торговле хладагентами",
