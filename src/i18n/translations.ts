@@ -4,7 +4,7 @@ export const translations: Record<Lang, Record<string, string>> = {
   EN: {
     // Nav
     navAbout: "About",
-    navServices: "Services",
+    navServices: "What We Offer",
     navContact: "Contact",
 
     // Hero
@@ -48,7 +48,7 @@ export const translations: Record<Lang, Record<string, string>> = {
   },
   ET: {
     navAbout: "Meist",
-    navServices: "Teenused",
+    navServices: "Mida pakume",
     navContact: "Kontakt",
 
     heroTitle: "Usaldusväärne külmagaasi kauplemise partner",
@@ -87,7 +87,7 @@ export const translations: Record<Lang, Record<string, string>> = {
   },
   RU: {
     navAbout: "О нас",
-    navServices: "Услуги",
+    navServices: "Что мы предлагаем",
     navContact: "Контакты",
 
     heroTitle: "Надёжный партнёр по торговле хладагентами",
@@ -126,7 +126,7 @@ export const translations: Record<Lang, Record<string, string>> = {
   },
   LV: {
     navAbout: "Par mums",
-    navServices: "Pakalpojumi",
+    navServices: "Ko mēs piedāvājam",
     navContact: "Kontakti",
 
     heroTitle: "Uzticams aukstumaģentu tirdzniecības partneris",
