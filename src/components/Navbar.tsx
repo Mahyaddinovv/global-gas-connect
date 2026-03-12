@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/i18n/LanguageContext";
+import type { Lang } from "@/i18n/translations";
 
-const navLinks = [
-  { label: "About", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Contact", href: "#contact" },
-];
-
-const languages = ["EN", "ET", "RU", "LV"];
+const languages: Lang[] = ["EN", "ET", "RU", "LV"];
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeLang, setActiveLang] = useState("EN");
+  const { lang, setLang, t } = useLanguage();
+
+  const navLinks = [
+    { label: t("navAbout"), href: "#about" },
+    { label: t("navServices"), href: "#services" },
+    { label: t("navContact"), href: "#contact" },
+  ];
 
   const scrollTo = (href: string) => {
     setMobileOpen(false);
@@ -27,7 +29,6 @@ const Navbar = () => {
           CoolGas Trading
         </span>
 
-        {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
             <button
@@ -39,23 +40,22 @@ const Navbar = () => {
             </button>
           ))}
           <div className="flex items-center gap-1 ml-4 border-l pl-4">
-            {languages.map((lang) => (
+            {languages.map((l) => (
               <button
-                key={lang}
-                onClick={() => setActiveLang(lang)}
+                key={l}
+                onClick={() => setLang(l)}
                 className={`text-xs font-semibold px-2 py-1 rounded transition-colors ${
-                  activeLang === lang
+                  lang === l
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {lang}
+                {l}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Mobile toggle */}
         <Button
           variant="ghost"
           size="icon"
@@ -66,7 +66,6 @@ const Navbar = () => {
         </Button>
       </div>
 
-      {/* Mobile menu */}
       {mobileOpen && (
         <div className="md:hidden bg-card border-b px-4 pb-4 space-y-3">
           {navLinks.map((link) => (
@@ -79,17 +78,17 @@ const Navbar = () => {
             </button>
           ))}
           <div className="flex items-center gap-1 pt-2 border-t">
-            {languages.map((lang) => (
+            {languages.map((l) => (
               <button
-                key={lang}
-                onClick={() => setActiveLang(lang)}
+                key={l}
+                onClick={() => setLang(l)}
                 className={`text-xs font-semibold px-2 py-1 rounded transition-colors ${
-                  activeLang === lang
+                  lang === l
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {lang}
+                {l}
               </button>
             ))}
           </div>
