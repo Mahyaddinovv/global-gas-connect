@@ -125,6 +125,8 @@ export const translations: Record<Lang, Record<string, string>> = {
     consentText: "Я согласен на обработку моих персональных данных с целью обработки данного запроса.",
     submitButton: "Отправить запрос",
     successMessage: "Спасибо за ваше сообщение. Мы свяжемся с вами в ближайшее время.",
+    errorTitle: "Ошибка",
+    errorMessage: "Что-то пошло не так. Пожалуйста, попробуйте позже.",
 
     footerRights: "Все права защищены.",
   },
