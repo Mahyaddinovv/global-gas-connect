@@ -166,6 +166,8 @@ export const translations: Record<Lang, Record<string, string>> = {
     consentText: "Piekrītu savu personas datu apstrādei šī pieprasījuma izskatīšanas nolūkā.",
     submitButton: "Nosūtīt pieprasījumu",
     successMessage: "Paldies par jūsu ziņojumu. Mēs ar jums sazināsimies tuvākajā laikā.",
+    errorTitle: "Kļūda",
+    errorMessage: "Kaut kas nogāja greizi. Lūdzu, mēģiniet vēlāk.",
 
     footerRights: "Visas tiesības aizsargātas.",
   },
