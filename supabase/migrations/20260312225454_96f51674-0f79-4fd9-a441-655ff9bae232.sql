@@ -1,0 +1,1 @@
+CREATE POLICY "Allow public inserts" ON public.inquiries FOR INSERT TO anon, authenticated WITH CHECK (true);
