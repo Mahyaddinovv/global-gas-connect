@@ -48,7 +48,7 @@ export const translations: Record<Lang, Record<string, string>> = {
   },
   ET: {
     navAbout: "Meist",
-    navServices: "Teenused",
+    navServices: "Mida pakume",
     navContact: "Kontakt",
 
     heroTitle: "Usaldusväärne külmagaasi kauplemise partner",
