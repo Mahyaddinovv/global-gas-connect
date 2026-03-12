@@ -42,6 +42,8 @@ export const translations: Record<Lang, Record<string, string>> = {
     consentText: "I agree to the processing of my personal data for the purpose of handling this inquiry.",
     submitButton: "Send Request",
     successMessage: "Thank you for your message. We will contact you shortly.",
+    errorTitle: "Error",
+    errorMessage: "Something went wrong. Please try again later.",
 
     // Footer
     footerRights: "All rights reserved.",
