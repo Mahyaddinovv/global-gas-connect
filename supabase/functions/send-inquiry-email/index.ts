@@ -63,6 +63,9 @@ serve(async (req) => {
       });
     }
 
+    const escHtml = (s: string) =>
+      s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     if (!RESEND_API_KEY) {
       throw new Error("RESEND_API_KEY is not configured");
@@ -70,12 +73,12 @@ serve(async (req) => {
 
     const emailHtml = `
       <h2>New Inquiry Received</h2>
-      <p><strong>Inquiry ID:</strong> ${inquiry.id}</p>
-      <p><strong>Company Name:</strong> ${inquiry.company_name}</p>
-      <p><strong>Contact Person:</strong> ${inquiry.contact_person}</p>
-      <p><strong>Email:</strong> ${inquiry.email}</p>
+      <p><strong>Inquiry ID:</strong> ${escHtml(inquiry.id)}</p>
+      <p><strong>Company Name:</strong> ${escHtml(inquiry.company_name)}</p>
+      <p><strong>Contact Person:</strong> ${escHtml(inquiry.contact_person)}</p>
+      <p><strong>Email:</strong> ${escHtml(inquiry.email)}</p>
       <p><strong>Message:</strong></p>
-      <p>${inquiry.message}</p>
+      <p>${escHtml(inquiry.message)}</p>
     `;
 
     const res = await fetch("https://api.resend.com/emails", {
