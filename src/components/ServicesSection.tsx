@@ -1,6 +1,8 @@
+import type { CSSProperties } from "react";
 import { CheckCircle } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCmsSection } from "@/integrations/supabase/cmsContent";
+import { cn } from "@/lib/utils";
 
 const serviceKeys = [
   "service1",
@@ -12,13 +14,19 @@ const serviceKeys = [
   "service7",
 ];
 
-const ServicesSection = () => {
+interface ServicesSectionProps {
+  className?: string;
+  contentClassName?: string;
+  style?: CSSProperties;
+}
+
+const ServicesSection = ({ className, contentClassName, style }: ServicesSectionProps) => {
   const { t } = useLanguage();
   const { values } = useCmsSection("offers");
 
   return (
-    <section id="services" className="py-20 md:py-28 section-alt">
-      <div className="container mx-auto px-4 max-w-3xl">
+    <section id="services" className={cn("section-alt", className)} style={style}>
+      <div className={cn("container mx-auto max-w-3xl px-4", contentClassName)}>
         <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-8">
           {values.title ?? values.servicesTitle ?? t("servicesTitle")}
         </h2>

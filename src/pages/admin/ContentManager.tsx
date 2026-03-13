@@ -1,11 +1,12 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronRight } from "lucide-react";
-import { CMS_LANGS, useCmsContentAll, type CmsContentRow, useUpdateCmsContent } from "@/integrations/supabase/cmsContent";
-import type { Lang } from "@/i18n/translations";
+import { useCreateAuditLog } from "@/integrations/supabase/cmsAudit";
+import { CMS_LANGS, useCmsContentAll, useUpdateCmsContent, type CmsContentRow } from "@/integrations/supabase/cmsContent";
 import { useToast } from "@/hooks/use-toast";
+import type { Lang } from "@/i18n/translations";
 
 const SECTION_ORDER: { id: string; label: string }[] = [
   { id: "hero", label: "Hero" },
@@ -26,6 +27,7 @@ const ContentManager = () => {
 
   const { data, isLoading, isError, error } = useCmsContentAll(language);
   const { mutateAsync: updateContent, isPending: isSaving } = useUpdateCmsContent();
+  const { mutateAsync: createAuditLog } = useCreateAuditLog();
   const { toast } = useToast();
 
   const bySection = useMemo(() => {
@@ -51,10 +53,24 @@ const ContentManager = () => {
 
     try {
       await updateContent({ id: row.id, value: newValue });
+
+      let auditFailed = false;
+      try {
+        await createAuditLog({
+          action: `Updated ${row.section} content (${row.key}, ${language})`,
+          section: "content",
+        });
+      } catch {
+        auditFailed = true;
+      }
+
       toast({
         title: "Saved",
-        description: `Updated "${row.key}" in ${row.section} (${language}).`,
+        description: auditFailed
+          ? `Updated "${row.key}" in ${row.section} (${language}). Audit logging failed.`
+          : `Updated "${row.key}" in ${row.section} (${language}).`,
       });
+
       setEditedValues((prev) => {
         const { [row.id]: _removed, ...rest } = prev;
         return rest;
@@ -74,9 +90,7 @@ const ContentManager = () => {
       <div className="flex items-center justify-between gap-4">
         <div>
           <h2 className="text-lg font-semibold text-slate-50">Content sections</h2>
-          <p className="text-xs text-slate-400">
-            Edit hero, about, offers and contact texts for each language.
-          </p>
+          <p className="text-xs text-slate-400">Edit hero, about, offers and contact texts for each language.</p>
         </div>
         <div className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/80 px-2 py-1">
           <span className="text-xs text-slate-400">Language</span>
@@ -102,9 +116,7 @@ const ContentManager = () => {
 
       {isLoading && (
         <Card className="border-slate-800 bg-slate-900/60">
-          <CardContent className="py-10 text-center text-sm text-slate-400">
-            Loading content from Supabase...
-          </CardContent>
+          <CardContent className="py-10 text-center text-sm text-slate-400">Loading content from Supabase...</CardContent>
         </Card>
       )}
 
@@ -113,9 +125,7 @@ const ContentManager = () => {
           <CardHeader>
             <CardTitle className="text-sm font-medium text-red-100">Error loading content</CardTitle>
           </CardHeader>
-          <CardContent className="text-xs text-red-200">
-            {(error as Error)?.message ?? "Unknown error"}
-          </CardContent>
+          <CardContent className="text-xs text-red-200">{(error as Error)?.message ?? "Unknown error"}</CardContent>
         </Card>
       )}
 
@@ -136,9 +146,7 @@ const ContentManager = () => {
                   ) : (
                     <ChevronRight className="h-4 w-4 text-slate-400" />
                   )}
-                  <CardTitle className="text-sm font-medium text-slate-100">
-                    {section.label}
-                  </CardTitle>
+                  <CardTitle className="text-sm font-medium text-slate-100">{section.label}</CardTitle>
                 </div>
                 <span className="text-xs text-slate-400">
                   {rows.length} key{rows.length === 1 ? "" : "s"}
@@ -148,8 +156,8 @@ const ContentManager = () => {
                 <CardContent className="space-y-3">
                   {rows.length === 0 && (
                     <p className="text-xs text-slate-400">
-                      No rows found for this section and language. Create rows in the
-                      `cms_content` table with section="{section.id}" and language="{language}".
+                      No rows found for this section and language. Create rows in the `cms_content` table with
+                      section="{section.id}" and language="{language}".
                     </p>
                   )}
                   {rows.map((row) => {
@@ -170,7 +178,7 @@ const ContentManager = () => {
                         <div className="flex w-full flex-1 flex-col gap-2 md:flex-row md:items-center">
                           <Input
                             value={currentValue}
-                            onChange={(e) => handleChangeValue(row.id, e.target.value)}
+                            onChange={(event) => handleChangeValue(row.id, event.target.value)}
                             className="w-full bg-slate-950/80 text-sm"
                           />
                           <Button
@@ -195,4 +203,3 @@ const ContentManager = () => {
 };
 
 export default ContentManager;
-

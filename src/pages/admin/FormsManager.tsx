@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowDown, ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { useCreateAuditLog } from "@/integrations/supabase/cmsAudit";
 import {
+  DEFAULT_FORM_FIELDS,
   useFormConfig,
   useUpsertFormFields,
-  DEFAULT_FORM_FIELDS,
   type CmsFormFieldRow,
 } from "@/integrations/supabase/cmsForms";
 import { useToast } from "@/hooks/use-toast";
@@ -26,6 +27,7 @@ const FormsManager = () => {
   const { lang } = useLanguage();
   const { data, isLoading } = useFormConfig();
   const { mutateAsync, isPending } = useUpsertFormFields();
+  const { mutateAsync: createAuditLog } = useCreateAuditLog();
   const { toast } = useToast();
 
   const [fields, setFields] = useState<EditableField[]>([]);
@@ -58,30 +60,43 @@ const FormsManager = () => {
       if (targetIndex < 0 || targetIndex >= next.length) return prev;
       const [item] = next.splice(idx, 1);
       next.splice(targetIndex, 0, item);
-      return next.map((f, index) => ({ ...f, position: index }));
+      return next.map((field, index) => ({ ...field, position: index }));
     });
   };
 
   const updateField = (id: string, patch: Partial<EditableField>) => {
-    setFields((prev) => prev.map((f) => (f.id === id ? { ...f, ...patch } : f)));
+    setFields((prev) => prev.map((field) => (field.id === id ? { ...field, ...patch } : field)));
   };
 
   const handleSave = async () => {
     try {
-      const payload: CmsFormFieldRow[] = fields.map((f) => ({
-        id: f.id,
-        field_key: f.field_key,
-        label: f.label,
-        placeholder: f.placeholder,
-        required: f.required,
-        position: f.position,
+      const payload: CmsFormFieldRow[] = fields.map((field) => ({
+        id: field.id,
+        field_key: field.field_key,
+        label: field.label,
+        placeholder: field.placeholder,
+        required: field.required,
+        position: field.position,
         language: lang.toLowerCase(),
       }));
 
       await mutateAsync(payload);
+
+      let auditFailed = false;
+      try {
+        await createAuditLog({
+          action: `Updated contact form settings (${lang})`,
+          section: "forms",
+        });
+      } catch {
+        auditFailed = true;
+      }
+
       toast({
         title: "Form saved",
-        description: "Contact form configuration has been updated.",
+        description: auditFailed
+          ? "Contact form configuration has been updated. Audit logging failed."
+          : "Contact form configuration has been updated.",
       });
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Unknown error";
@@ -99,7 +114,7 @@ const FormsManager = () => {
         <CardTitle className="text-sm font-medium text-slate-100">Contact form fields</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {isLoading && <p className="text-xs text-slate-400">Loading form configuration…</p>}
+        {isLoading && <p className="text-xs text-slate-400">Loading form configuration...</p>}
         <div className="space-y-3">
           {fields.map((field, index) => (
             <div
@@ -113,7 +128,7 @@ const FormsManager = () => {
                     <span className="text-xs text-slate-300">Required</span>
                     <Switch
                       checked={field.required}
-                      onCheckedChange={(v) => updateField(field.id, { required: v === true })}
+                      onCheckedChange={(value) => updateField(field.id, { required: value === true })}
                     />
                     <Button
                       size="icon"
@@ -138,12 +153,12 @@ const FormsManager = () => {
                 <div className="grid gap-2 md:grid-cols-2">
                   <Input
                     value={field.label}
-                    onChange={(e) => updateField(field.id, { label: e.target.value })}
+                    onChange={(event) => updateField(field.id, { label: event.target.value })}
                     placeholder="Label"
                   />
                   <Input
                     value={field.placeholder}
-                    onChange={(e) => updateField(field.id, { placeholder: e.target.value })}
+                    onChange={(event) => updateField(field.id, { placeholder: event.target.value })}
                     placeholder="Placeholder"
                   />
                 </div>
@@ -152,7 +167,7 @@ const FormsManager = () => {
           ))}
         </div>
         <Button onClick={() => void handleSave()} disabled={isPending}>
-          {isPending ? "Saving…" : "Save form"}
+          {isPending ? "Saving..." : "Save form"}
         </Button>
       </CardContent>
     </Card>
@@ -179,4 +194,3 @@ const defaultLabel = (key: string) => {
 const defaultRequired = (key: string) => key !== "consent";
 
 export default FormsManager;
-

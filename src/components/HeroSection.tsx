@@ -1,8 +1,16 @@
+import type { CSSProperties } from "react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCmsSection } from "@/integrations/supabase/cmsContent";
+import { cn } from "@/lib/utils";
 
-const HeroSection = () => {
+interface HeroSectionProps {
+  className?: string;
+  contentClassName?: string;
+  style?: CSSProperties;
+}
+
+const HeroSection = ({ className, contentClassName, style }: HeroSectionProps) => {
   const { t } = useLanguage();
   const { values } = useCmsSection("hero");
 
@@ -12,15 +20,15 @@ const HeroSection = () => {
 
   return (
     <section
-      className="relative min-h-[85vh] flex items-center justify-center overflow-hidden"
-      style={{ background: "var(--hero-gradient)" }}
+      className={cn("relative flex min-h-[85vh] items-center justify-center overflow-hidden", className)}
+      style={{ background: "var(--hero-gradient)", ...style }}
     >
       <div className="absolute inset-0 opacity-10" style={{
         backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
         backgroundSize: "40px 40px"
       }} />
 
-      <div className="relative container mx-auto px-4 py-20 text-center max-w-3xl">
+      <div className={cn("relative container mx-auto max-w-3xl px-4", contentClassName)}>
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight mb-6">
           {values.title ?? values.heroTitle ?? t("heroTitle")}
         </h1>

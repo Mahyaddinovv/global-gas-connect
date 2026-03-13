@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState, type CSSProperties, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,8 +8,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useCmsSection } from "@/integrations/supabase/cmsContent";
 import { useFormConfig, DEFAULT_FORM_FIELDS } from "@/integrations/supabase/cmsForms";
+import { cn } from "@/lib/utils";
 
-const ContactSection = () => {
+interface ContactSectionProps {
+  className?: string;
+  contentClassName?: string;
+  style?: CSSProperties;
+}
+
+const ContactSection = ({ className, contentClassName, style }: ContactSectionProps) => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [consent, setConsent] = useState(false);
@@ -63,8 +70,8 @@ const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="py-20 md:py-28">
-      <div className="container mx-auto px-4 max-w-xl">
+    <section id="contact" className={cn(className)} style={style}>
+      <div className={cn("container mx-auto max-w-xl px-4", contentClassName)}>
         <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
           {values.title ?? values.contactTitle ?? t("contactTitle")}
         </h2>

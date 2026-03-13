@@ -1,19 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
-import { useCmsLanguages, useUpsertLanguages, ALL_LANGS } from "@/integrations/supabase/cmsLanguages";
+import { useCreateAuditLog } from "@/integrations/supabase/cmsAudit";
+import { ALL_LANGS, useCmsLanguages, useUpsertLanguages } from "@/integrations/supabase/cmsLanguages";
 import { useToast } from "@/hooks/use-toast";
 
 const LanguagesManager = () => {
   const { data, isLoading } = useCmsLanguages();
   const { mutateAsync, isPending } = useUpsertLanguages();
+  const { mutateAsync: createAuditLog } = useCreateAuditLog();
   const { toast } = useToast();
 
   const initial = useMemo(
     () =>
       ALL_LANGS.map((code) => {
-        const row = data?.find((r) => r.code.toUpperCase() === code);
+        const row = data?.find((entry) => entry.code.toUpperCase() === code);
         return {
           id: row?.id ?? crypto.randomUUID(),
           code,
@@ -30,15 +32,28 @@ const LanguagesManager = () => {
   }, [initial]);
 
   const toggleLang = (code: string, enabled: boolean) => {
-    setRows((prev) => prev.map((r) => (r.code === code ? { ...r, enabled } : r)));
+    setRows((prev) => prev.map((row) => (row.code === code ? { ...row, enabled } : row)));
   };
 
   const handleSave = async () => {
     try {
       await mutateAsync(rows);
+
+      let auditFailed = false;
+      try {
+        await createAuditLog({
+          action: "Updated language availability",
+          section: "languages",
+        });
+      } catch {
+        auditFailed = true;
+      }
+
       toast({
         title: "Languages updated",
-        description: "Language availability has been saved.",
+        description: auditFailed
+          ? "Language availability has been saved. Audit logging failed."
+          : "Language availability has been saved.",
       });
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Unknown error";
@@ -56,7 +71,7 @@ const LanguagesManager = () => {
         <CardTitle className="text-sm font-medium text-slate-100">Languages</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {isLoading && <p className="text-xs text-slate-400">Loading languages…</p>}
+        {isLoading && <p className="text-xs text-slate-400">Loading languages...</p>}
         <div className="space-y-3">
           {rows.map((row) => (
             <div
@@ -69,12 +84,12 @@ const LanguagesManager = () => {
                   {row.enabled ? "Visible in language switcher" : "Hidden from language switcher"}
                 </div>
               </div>
-              <Switch checked={row.enabled} onCheckedChange={(v) => toggleLang(row.code, v === true)} />
+              <Switch checked={row.enabled} onCheckedChange={(value) => toggleLang(row.code, value === true)} />
             </div>
           ))}
         </div>
         <Button onClick={() => void handleSave()} disabled={isPending}>
-          {isPending ? "Saving…" : "Save languages"}
+          {isPending ? "Saving..." : "Save languages"}
         </Button>
       </CardContent>
     </Card>
@@ -82,4 +97,3 @@ const LanguagesManager = () => {
 };
 
 export default LanguagesManager;
-

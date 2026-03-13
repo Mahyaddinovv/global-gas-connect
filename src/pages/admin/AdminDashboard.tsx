@@ -1,5 +1,4 @@
 import {
-  SidebarProvider,
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -11,26 +10,29 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarProvider,
   SidebarSeparator,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
-import { FileText, FileSymlink, Globe2, Languages, LayoutDashboard, ListChecks, Users } from "lucide-react";
+import { Blocks, FileSymlink, FileText, Globe2, Languages, LayoutDashboard, ListChecks, Users } from "lucide-react";
 import { useAuth } from "@/integrations/supabase/auth";
+import OverviewPanel from "./OverviewPanel";
 import ContentManager from "./ContentManager";
+import BuilderManager from "./BuilderManager";
 import SeoManager from "./SeoManager";
 import MenuManager from "./MenuManager";
 import LanguagesManager from "./LanguagesManager";
 import FormsManager from "./FormsManager";
 import UsersManager from "./UsersManager";
 
-type SectionKey = "overview" | "content" | "menu" | "forms" | "seo" | "languages" | "users";
+type SectionKey = "overview" | "content" | "builder" | "menu" | "forms" | "seo" | "languages" | "users";
 
 const sections: { key: SectionKey; label: string; icon: React.ElementType }[] = [
   { key: "overview", label: "Overview", icon: LayoutDashboard },
   { key: "content", label: "Content", icon: FileText },
+  { key: "builder", label: "Builder", icon: Blocks },
   { key: "menu", label: "Menu", icon: FileSymlink },
   { key: "forms", label: "Forms", icon: ListChecks },
   { key: "seo", label: "SEO", icon: Globe2 },
@@ -42,7 +44,7 @@ const AdminDashboard = ({ initialSection = "overview" }: { initialSection?: Sect
   const [activeSection, setActiveSection] = useState<SectionKey>(initialSection);
   const { user, signOut } = useAuth();
 
-  const ActiveIcon = sections.find((s) => s.key === activeSection)?.icon ?? LayoutDashboard;
+  const ActiveIcon = sections.find((section) => section.key === activeSection)?.icon ?? LayoutDashboard;
 
   return (
     <SidebarProvider>
@@ -85,12 +87,8 @@ const AdminDashboard = ({ initialSection = "overview" }: { initialSection?: Sect
         <SidebarFooter>
           <div className="flex items-center justify-between rounded-md bg-sidebar-accent/50 px-2 py-2 text-xs">
             <div className="flex flex-col">
-              <span className="font-medium text-sidebar-foreground">
-                {user?.email ?? "Unknown user"}
-              </span>
-              <span className="capitalize text-sidebar-foreground/70">
-                {user?.role ?? "no role"}
-              </span>
+              <span className="font-medium text-sidebar-foreground">{user?.email ?? "Unknown user"}</span>
+              <span className="capitalize text-sidebar-foreground/70">{user?.role ?? "no role"}</span>
             </div>
             <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={() => void signOut()}>
               Sign out
@@ -113,75 +111,19 @@ const AdminDashboard = ({ initialSection = "overview" }: { initialSection?: Sect
               <div>
                 <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
                   <ActiveIcon className="h-5 w-5 text-sky-400" />
-                  <span>
-                    {sections.find((s) => s.key === activeSection)?.label ?? "Overview"}
-                  </span>
+                  <span>{sections.find((section) => section.key === activeSection)?.label ?? "Overview"}</span>
                 </h1>
-                <p className="mt-1 text-sm text-slate-400">
-                  Manage your ClearContent CMS configuration and content.
-                </p>
+                <p className="mt-1 text-sm text-slate-400">Manage your ClearContent CMS configuration and content.</p>
               </div>
             </div>
 
-            {activeSection === "overview" && (
-              <div className="grid gap-4 md:grid-cols-3">
-                <Card className="border-slate-800 bg-slate-900/70">
-                  <CardHeader>
-                    <CardTitle className="text-sm font-medium text-slate-300">
-                      Content model
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <p className="text-3xl font-semibold text-slate-50">cms_content</p>
-                    <p className="text-xs text-slate-400">
-                      Key-value content sections per language.
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card className="border-slate-800 bg-slate-900/70">
-                  <CardHeader>
-                    <CardTitle className="text-sm font-medium text-slate-300">
-                      SEO pages
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <p className="text-3xl font-semibold text-slate-50">cms_pages</p>
-                    <p className="text-xs text-slate-400">
-                      Slugs, titles and meta descriptions.
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card className="border-slate-800 bg-slate-900/70">
-                  <CardHeader>
-                    <CardTitle className="text-sm font-medium text-slate-300">
-                      User roles
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-1">
-                    <p className="text-xs text-slate-400">
-                      <span className="font-semibold text-slate-200">superadmin</span> – full access
-                    </p>
-                    <p className="text-xs text-slate-400">
-                      <span className="font-semibold text-slate-200">admin</span> – content + users
-                    </p>
-                    <p className="text-xs text-slate-400">
-                      <span className="font-semibold text-slate-200">editor</span> – content only
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-
+            {activeSection === "overview" && <OverviewPanel />}
             {activeSection === "content" && <ContentManager />}
-
+            {activeSection === "builder" && <BuilderManager />}
             {activeSection === "menu" && <MenuManager />}
-
             {activeSection === "forms" && <FormsManager />}
-
             {activeSection === "seo" && <SeoManager />}
-
             {activeSection === "languages" && <LanguagesManager />}
-
             {activeSection === "users" && <UsersManager />}
           </div>
         </main>
@@ -190,19 +132,4 @@ const AdminDashboard = ({ initialSection = "overview" }: { initialSection?: Sect
   );
 };
 
-const SectionPlaceholder = ({ title, description }: { title: string; description: string }) => (
-  <Card className="border-dashed border-slate-800 bg-slate-900/50">
-    <CardHeader>
-      <CardTitle className="text-base font-medium text-slate-100">{title}</CardTitle>
-    </CardHeader>
-    <CardContent className="space-y-3 text-sm text-slate-300">
-      <p>{description}</p>
-      <p className="text-xs text-slate-500">
-        This is a placeholder section ready to be wired to your Supabase tables and queries.
-      </p>
-    </CardContent>
-  </Card>
-);
-
 export default AdminDashboard;
-

@@ -1,13 +1,21 @@
+import type { CSSProperties } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCmsSection } from "@/integrations/supabase/cmsContent";
+import { cn } from "@/lib/utils";
 
-const AboutSection = () => {
+interface AboutSectionProps {
+  className?: string;
+  contentClassName?: string;
+  style?: CSSProperties;
+}
+
+const AboutSection = ({ className, contentClassName, style }: AboutSectionProps) => {
   const { t } = useLanguage();
   const { values } = useCmsSection("about");
 
   return (
-    <section id="about" className="py-20 md:py-28">
-      <div className="container mx-auto px-4 max-w-3xl">
+    <section id="about" className={cn(className)} style={style}>
+      <div className={cn("container mx-auto max-w-3xl px-4", contentClassName)}>
         <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
           {values.title ?? values.aboutTitle ?? t("aboutTitle")}
         </h2>

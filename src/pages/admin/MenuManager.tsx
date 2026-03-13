@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ArrowDown, ArrowUp, Eye, EyeOff } from "lucide-react";
-import { useMenu, useUpsertMenuItems, MENU_KEYS, type CmsMenuItemRow } from "@/integrations/supabase/cmsMenu";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { useCreateAuditLog } from "@/integrations/supabase/cmsAudit";
+import { MENU_KEYS, useMenu, useUpsertMenuItems, type CmsMenuItemRow } from "@/integrations/supabase/cmsMenu";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
 
@@ -19,6 +20,7 @@ const MenuManager = () => {
   const { lang } = useLanguage();
   const { data, isLoading } = useMenu();
   const { mutateAsync, isPending } = useUpsertMenuItems();
+  const { mutateAsync: createAuditLog } = useCreateAuditLog();
   const { toast } = useToast();
 
   const [items, setItems] = useState<EditableMenuItem[]>([]);
@@ -50,33 +52,46 @@ const MenuManager = () => {
       if (targetIndex < 0 || targetIndex >= next.length) return prev;
       const [item] = next.splice(idx, 1);
       next.splice(targetIndex, 0, item);
-      return next.map((i, index) => ({ ...i, position: index }));
+      return next.map((entry, index) => ({ ...entry, position: index }));
     });
   };
 
   const toggleVisible = (id: string) => {
-    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, visible: !i.visible } : i)));
+    setItems((prev) => prev.map((item) => (item.id === id ? { ...item, visible: !item.visible } : item)));
   };
 
   const updateLabel = (id: string, label: string) => {
-    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, label } : i)));
+    setItems((prev) => prev.map((item) => (item.id === id ? { ...item, label } : item)));
   };
 
   const handleSave = async () => {
     try {
-      const payload: CmsMenuItemRow[] = items.map((i) => ({
-        id: i.id,
-        key: i.key,
-        label: i.label,
-        position: i.position,
-        visible: i.visible,
+      const payload: CmsMenuItemRow[] = items.map((item) => ({
+        id: item.id,
+        key: item.key,
+        label: item.label,
+        position: item.position,
+        visible: item.visible,
         language: lang.toLowerCase(),
       }));
 
       await mutateAsync(payload);
+
+      let auditFailed = false;
+      try {
+        await createAuditLog({
+          action: `Updated menu settings (${lang})`,
+          section: "menu",
+        });
+      } catch {
+        auditFailed = true;
+      }
+
       toast({
         title: "Menu saved",
-        description: "Navigation labels and order have been updated.",
+        description: auditFailed
+          ? "Navigation labels and order have been updated. Audit logging failed."
+          : "Navigation labels and order have been updated.",
       });
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Unknown error";
@@ -94,14 +109,14 @@ const MenuManager = () => {
         <CardTitle className="text-sm font-medium text-slate-100">Main navigation</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {isLoading && <p className="text-xs text-slate-400">Loading menu…</p>}
+        {isLoading && <p className="text-xs text-slate-400">Loading menu...</p>}
         <div className="space-y-3">
           {items.map((item, index) => (
             <div
               key={item.id}
               className="flex items-center gap-3 rounded-md border border-slate-800/80 bg-slate-950/80 px-3 py-2 text-sm"
             >
-              <div className="flex flex-col gap-1 flex-1">
+              <div className="flex flex-1 flex-col gap-1">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-mono text-slate-400">{item.key}</span>
                   <div className="flex items-center gap-1">
@@ -129,17 +144,13 @@ const MenuManager = () => {
                       className="h-7 w-7"
                       onClick={() => toggleVisible(item.id)}
                     >
-                      {item.visible ? (
-                        <Eye className="h-4 w-4 text-sky-400" />
-                      ) : (
-                        <EyeOff className="h-4 w-4 text-slate-500" />
-                      )}
+                      {item.visible ? <Eye className="h-4 w-4 text-sky-400" /> : <EyeOff className="h-4 w-4 text-slate-500" />}
                     </Button>
                   </div>
                 </div>
                 <Input
                   value={item.label}
-                  onChange={(e) => updateLabel(item.id, e.target.value)}
+                  onChange={(event) => updateLabel(item.id, event.target.value)}
                   className="h-8 text-xs"
                 />
               </div>
@@ -147,7 +158,7 @@ const MenuManager = () => {
           ))}
         </div>
         <Button onClick={() => void handleSave()} disabled={isPending}>
-          {isPending ? "Saving…" : "Save menu"}
+          {isPending ? "Saving..." : "Save menu"}
         </Button>
       </CardContent>
     </Card>
@@ -168,4 +179,3 @@ const labelFromKey = (key: string) => {
 };
 
 export default MenuManager;
-
