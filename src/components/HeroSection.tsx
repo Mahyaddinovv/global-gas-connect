@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useCmsSection } from "@/integrations/supabase/cmsContent";
 
 const HeroSection = () => {
   const { t } = useLanguage();
+  const { values } = useCmsSection("hero");
 
   const scrollToContact = () => {
     document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
@@ -20,13 +22,13 @@ const HeroSection = () => {
 
       <div className="relative container mx-auto px-4 py-20 text-center max-w-3xl">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-tight mb-6">
-          {t("heroTitle")}
+          {values.title ?? values.heroTitle ?? t("heroTitle")}
         </h1>
         <p className="text-lg md:text-xl text-primary-foreground/85 mb-10 leading-relaxed">
-          {t("heroText")}
+          {values.body ?? values.heroText ?? t("heroText")}
         </p>
         <Button variant="hero" size="lg" onClick={scrollToContact} className="text-base px-8 py-6">
-          {t("heroCta")}
+          {values.cta ?? values.heroCta ?? t("heroCta")}
         </Button>
       </div>
     </section>

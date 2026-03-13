@@ -6,6 +6,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useCmsSection } from "@/integrations/supabase/cmsContent";
+import { useFormConfig, DEFAULT_FORM_FIELDS } from "@/integrations/supabase/cmsForms";
 
 const ContactSection = () => {
   const [submitted, setSubmitted] = useState(false);
@@ -13,6 +15,8 @@ const ContactSection = () => {
   const [consent, setConsent] = useState(false);
   const { t, lang } = useLanguage();
   const { toast } = useToast();
+  const { values } = useCmsSection("contact");
+  const { data: formConfig } = useFormConfig();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -62,10 +66,10 @@ const ContactSection = () => {
     <section id="contact" className="py-20 md:py-28">
       <div className="container mx-auto px-4 max-w-xl">
         <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">
-          {t("contactTitle")}
+          {values.title ?? values.contactTitle ?? t("contactTitle")}
         </h2>
         <p className="text-muted-foreground mb-8 leading-relaxed">
-          {t("contactIntro")}
+          {values.intro ?? values.contactIntro ?? t("contactIntro")}
         </p>
 
         {submitted ? (
@@ -76,42 +80,122 @@ const ContactSection = () => {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label htmlFor="company" className="block text-sm font-medium text-foreground mb-1.5">
-                {t("labelCompany")}
-              </label>
-              <Input id="company" name="company" required placeholder={t("placeholderCompany")} />
-            </div>
-            <div>
-              <label htmlFor="contact-person" className="block text-sm font-medium text-foreground mb-1.5">
-                {t("labelContact")}
-              </label>
-              <Input id="contact-person" name="contact-person" required placeholder={t("placeholderContact")} />
-            </div>
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1.5">
-                {t("labelEmail")}
-              </label>
-              <Input id="email" name="email" type="email" required placeholder={t("placeholderEmail")} />
-            </div>
-            <div>
-              <label htmlFor="message" className="block text-sm font-medium text-foreground mb-1.5">
-                {t("labelMessage")}
-              </label>
-              <Textarea id="message" name="message" required placeholder={t("placeholderMessage")} rows={4} />
-            </div>
-            <div className="flex items-start gap-2">
-              <Checkbox
-                id="consent"
-                checked={consent}
-                onCheckedChange={(v) => setConsent(v === true)}
-              />
-              <label htmlFor="consent" className="text-sm text-muted-foreground leading-snug cursor-pointer">
-                {t("consentText")}
-              </label>
-            </div>
+            {buildOrderedFields(formConfig).map((field) => {
+              if (field.key === "company") {
+                return (
+                  <div key={field.key}>
+                    <label htmlFor="company" className="block text-sm font-medium text-foreground mb-1.5">
+                      {field.label ??
+                        values.label_company ??
+                        values.labelCompany ??
+                        t("labelCompany")}
+                    </label>
+                    <Input
+                      id="company"
+                      name="company"
+                      required={field.required}
+                      placeholder={
+                        field.placeholder ??
+                        values.placeholder_company ??
+                        values.placeholderCompany ??
+                        t("placeholderCompany")
+                      }
+                    />
+                  </div>
+                );
+              }
+              if (field.key === "contactPerson") {
+                return (
+                  <div key={field.key}>
+                    <label
+                      htmlFor="contact-person"
+                      className="block text-sm font-medium text-foreground mb-1.5"
+                    >
+                      {field.label ??
+                        values.label_contact ??
+                        values.labelContact ??
+                        t("labelContact")}
+                    </label>
+                    <Input
+                      id="contact-person"
+                      name="contact-person"
+                      required={field.required}
+                      placeholder={
+                        field.placeholder ??
+                        values.placeholder_contact ??
+                        values.placeholderContact ??
+                        t("placeholderContact")
+                      }
+                    />
+                  </div>
+                );
+              }
+              if (field.key === "email") {
+                return (
+                  <div key={field.key}>
+                    <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1.5">
+                      {field.label ?? values.label_email ?? values.labelEmail ?? t("labelEmail")}
+                    </label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      required={field.required}
+                      placeholder={
+                        field.placeholder ??
+                        values.placeholder_email ??
+                        values.placeholderEmail ??
+                        t("placeholderEmail")
+                      }
+                    />
+                  </div>
+                );
+              }
+              if (field.key === "message") {
+                return (
+                  <div key={field.key}>
+                    <label htmlFor="message" className="block text-sm font-medium text-foreground mb-1.5">
+                      {field.label ??
+                        values.label_message ??
+                        values.labelMessage ??
+                        t("labelMessage")}
+                    </label>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      required={field.required}
+                      placeholder={
+                        field.placeholder ??
+                        values.placeholder_message ??
+                        values.placeholderMessage ??
+                        t("placeholderMessage")
+                      }
+                      rows={4}
+                    />
+                  </div>
+                );
+              }
+              if (field.key === "consent") {
+                return (
+                  <div key={field.key} className="flex items-start gap-2">
+                    <Checkbox
+                      id="consent"
+                      checked={consent}
+                      onCheckedChange={(v) => setConsent(v === true)}
+                    />
+                    <label
+                      htmlFor="consent"
+                      className="text-sm text-muted-foreground leading-snug cursor-pointer"
+                    >
+                      {field.label ?? values.consent ?? values.consentText ?? t("consentText")}
+                    </label>
+                  </div>
+                );
+              }
+              return null;
+            })}
             <Button type="submit" size="lg" className="w-full" disabled={loading || !consent}>
-              {loading ? "..." : t("submitButton")}
+              {loading ? "..." : values.button ?? values.submitButton ?? t("submitButton")}
             </Button>
           </form>
         )}
@@ -121,3 +205,25 @@ const ContactSection = () => {
 };
 
 export default ContactSection;
+
+const buildOrderedFields = (config: ReturnType<typeof useFormConfig>["data"]) => {
+  if (config && config.length > 0) {
+    return config
+      .map((row) => ({
+        key: row.field_key as (typeof DEFAULT_FORM_FIELDS)[number]["key"],
+        label: row.label ?? "",
+        placeholder: row.placeholder ?? "",
+        required: row.required,
+        position: row.position,
+      }))
+      .sort((a, b) => a.position - b.position);
+  }
+
+  return DEFAULT_FORM_FIELDS.map((f, index) => ({
+    key: f.key,
+    label: "",
+    placeholder: "",
+    required: f.key !== "consent",
+    position: index,
+  }));
+};

@@ -1,20 +1,48 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/i18n/LanguageContext";
 import type { Lang } from "@/i18n/translations";
-
-const languages: Lang[] = ["EN", "ET", "RU", "LV"];
+import { useCmsLanguages, ALL_LANGS } from "@/integrations/supabase/cmsLanguages";
+import { useMenu, MENU_KEYS } from "@/integrations/supabase/cmsMenu";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { lang, setLang, t } = useLanguage();
+  const { data: languagesRows } = useCmsLanguages();
+  const { data: menuRows } = useMenu();
 
-  const navLinks = [
-    { label: t("navAbout"), href: "#about" },
-    { label: t("navServices"), href: "#services" },
-    { label: t("navContact"), href: "#contact" },
-  ];
+  const enabledLangs = useMemo<Lang[]>(() => {
+    if (!languagesRows || languagesRows.length === 0) {
+      return ALL_LANGS;
+    }
+
+    return languagesRows
+      .filter((row) => row.enabled)
+      .map((row) => row.code.toUpperCase() as Lang);
+  }, [languagesRows]);
+
+  useEffect(() => {
+    if (enabledLangs.length > 0 && !enabledLangs.includes(lang)) {
+      setLang(enabledLangs[0]);
+    }
+  }, [enabledLangs, lang, setLang]);
+
+  const navLinks =
+    menuRows && menuRows.length > 0
+      ? menuRows
+          .filter((row) => row.visible)
+          .map((row) => {
+            const def = MENU_KEYS.find((item) => item.key === row.key);
+            if (!def) return null;
+            return { label: row.label, href: def.defaultHref };
+          })
+          .filter(Boolean) as { label: string; href: string }[]
+      : [
+          { label: t("navAbout"), href: "#about" },
+          { label: t("navServices"), href: "#services" },
+          { label: t("navContact"), href: "#contact" },
+        ];
 
   const scrollTo = (href: string) => {
     setMobileOpen(false);
@@ -40,7 +68,7 @@ const Navbar = () => {
             </button>
           ))}
           <div className="flex items-center gap-1 ml-4 border-l pl-4">
-            {languages.map((l) => (
+            {enabledLangs.map((l) => (
               <button
                 key={l}
                 onClick={() => setLang(l)}
@@ -78,7 +106,7 @@ const Navbar = () => {
             </button>
           ))}
           <div className="flex items-center gap-1 pt-2 border-t">
-            {languages.map((l) => (
+            {enabledLangs.map((l) => (
               <button
                 key={l}
                 onClick={() => setLang(l)}
