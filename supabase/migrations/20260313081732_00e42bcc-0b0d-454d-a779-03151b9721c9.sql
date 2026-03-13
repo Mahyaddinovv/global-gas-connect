@@ -1,0 +1,1 @@
+CREATE POLICY "Allow select own insert" ON public.inquiries FOR SELECT TO anon, authenticated USING (true);

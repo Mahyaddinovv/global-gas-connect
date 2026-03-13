@@ -21,20 +21,23 @@ const ContactSection = () => {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    const { error } = await supabase.from("inquiries").insert({
+    const inquiryData = {
       company_name: (formData.get("company") as string).trim(),
       contact_person: (formData.get("contact-person") as string).trim(),
       email: (formData.get("email") as string).trim(),
       message: (formData.get("message") as string).trim(),
+    };
+
+    const { data, error } = await supabase.from("inquiries").insert({
+      ...inquiryData,
       consent,
       team_slug: "mahammad-m",
       source: "ai-web-2026",
       language: lang.toLowerCase(),
-    });
-
-    setLoading(false);
+    }).select("id").single();
 
     if (error) {
+      setLoading(false);
       toast({
         variant: "destructive",
         title: t("errorTitle") ?? "Error",
@@ -43,6 +46,12 @@ const ContactSection = () => {
       return;
     }
 
+    // Send email notification (fire-and-forget)
+    supabase.functions.invoke("send-inquiry-email", {
+      body: { id: data.id, ...inquiryData },
+    }).catch(console.error);
+
+    setLoading(false);
     setSubmitted(true);
   };
 
