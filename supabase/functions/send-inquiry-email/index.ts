@@ -68,7 +68,7 @@ serve(async (req) => {
       body: JSON.stringify({
         from: "onboarding@resend.dev",
         to: ["onboarding@resend.dev"],
-        subject: "[AI-WEB-2026] mahammad-m",
+        subject: "[AI-WEB-2026] TeamMaga",
         html: emailHtml,
       }),
     });

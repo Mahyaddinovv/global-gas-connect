@@ -38,7 +38,7 @@ const ContactSection = () => {
       id: inquiryId,
       ...inquiryData,
       consent,
-      team_slug: "mahammad-m",
+      team_slug: "TeamMaga",
       source: "ai-web-2026",
       language: lang.toLowerCase(),
     });
