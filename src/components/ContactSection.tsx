@@ -46,9 +46,9 @@ const ContactSection = () => {
       return;
     }
 
-    // Send email notification (fire-and-forget)
+    // Send email notification (fire-and-forget) — only pass the ID
     supabase.functions.invoke("send-inquiry-email", {
-      body: { id: data.id, ...inquiryData },
+      body: { id: data.id },
     }).catch(console.error);
 
     setLoading(false);
