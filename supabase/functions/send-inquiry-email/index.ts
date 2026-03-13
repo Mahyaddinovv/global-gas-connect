@@ -25,16 +25,12 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
 
-    // Validate the caller's token
+    // Validate the caller's token via server-side verification
     const callerClient = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } },
     });
-    const token = authHeader.replace("Bearer ", "");
-    const { error: claimsError } = await callerClient.auth.getClaims(token);
-
-    // For anon callers the role claim will be "anon" which is fine –
-    // we just need the token to be validly signed by our Supabase instance.
-    if (claimsError) {
+    const { data: { user }, error: authError } = await callerClient.auth.getUser();
+    if (authError || !user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

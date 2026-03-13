@@ -28,13 +28,16 @@ const ContactSection = () => {
       message: (formData.get("message") as string).trim(),
     };
 
-    const { data, error } = await supabase.from("inquiries").insert({
+    const inquiryId = crypto.randomUUID();
+
+    const { error } = await supabase.from("inquiries").insert({
+      id: inquiryId,
       ...inquiryData,
       consent,
       team_slug: "mahammad-m",
       source: "ai-web-2026",
       language: lang.toLowerCase(),
-    }).select("id").single();
+    });
 
     if (error) {
       setLoading(false);
@@ -48,7 +51,7 @@ const ContactSection = () => {
 
     // Send email notification (fire-and-forget) — only pass the ID
     supabase.functions.invoke("send-inquiry-email", {
-      body: { id: data.id },
+      body: { id: inquiryId },
     }).catch(console.error);
 
     setLoading(false);

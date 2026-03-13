@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Allow select own insert" ON public.inquiries;
