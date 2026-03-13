@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -12,21 +13,73 @@ serve(async (req) => {
   }
 
   try {
+    // Verify the caller is authenticated
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+
+    // Validate the caller's token
+    const callerClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    const token = authHeader.replace("Bearer ", "");
+    const { error: claimsError } = await callerClient.auth.getClaims(token);
+
+    // For anon callers the role claim will be "anon" which is fine –
+    // we just need the token to be validly signed by our Supabase instance.
+    if (claimsError) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Parse only the inquiry ID from the request – never trust client-supplied PII
+    const { id } = await req.json();
+    if (!id || typeof id !== "string") {
+      return new Response(JSON.stringify({ error: "Missing or invalid inquiry id" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Fetch inquiry data from the database using the service role key
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const adminClient = createClient(supabaseUrl, serviceRoleKey);
+
+    const { data: inquiry, error: dbError } = await adminClient
+      .from("inquiries")
+      .select("id, company_name, contact_person, email, message")
+      .eq("id", id)
+      .single();
+
+    if (dbError || !inquiry) {
+      return new Response(JSON.stringify({ error: "Inquiry not found" }), {
+        status: 404,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     if (!RESEND_API_KEY) {
       throw new Error("RESEND_API_KEY is not configured");
     }
 
-    const { id, company_name, contact_person, email, message } = await req.json();
-
     const emailHtml = `
       <h2>New Inquiry Received</h2>
-      <p><strong>Inquiry ID:</strong> ${id}</p>
-      <p><strong>Company Name:</strong> ${company_name}</p>
-      <p><strong>Contact Person:</strong> ${contact_person}</p>
-      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Inquiry ID:</strong> ${inquiry.id}</p>
+      <p><strong>Company Name:</strong> ${inquiry.company_name}</p>
+      <p><strong>Contact Person:</strong> ${inquiry.contact_person}</p>
+      <p><strong>Email:</strong> ${inquiry.email}</p>
       <p><strong>Message:</strong></p>
-      <p>${message}</p>
+      <p>${inquiry.message}</p>
     `;
 
     const res = await fetch("https://api.resend.com/emails", {
