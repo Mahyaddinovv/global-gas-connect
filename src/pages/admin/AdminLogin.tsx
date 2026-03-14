@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Lock } from "lucide-react";
 
 const AdminLogin = () => {
   const { signIn, loading } = useAuth();
@@ -30,15 +31,21 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      <Card className="w-full max-w-md border-slate-800 bg-slate-950/80 shadow-2xl shadow-slate-900/60 backdrop-blur">
-        <CardHeader className="space-y-2">
-          <CardTitle className="text-2xl font-semibold tracking-tight text-slate-50">
-            ClearContent Admin
-          </CardTitle>
-          <CardDescription className="text-slate-400">
-            Sign in to manage content, SEO, forms and more.
-          </CardDescription>
+    <div className="admin-theme flex min-h-screen items-center justify-center bg-background">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(207_70%_50%/0.08),transparent_60%)]" />
+      <Card className="relative z-10 w-full max-w-md border-border/60 bg-card shadow-2xl shadow-black/30">
+        <CardHeader className="space-y-3 pb-2">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Lock className="h-5 w-5" />
+          </div>
+          <div className="text-center">
+            <CardTitle className="text-xl font-semibold tracking-tight text-foreground">
+              CoolGas Admin
+            </CardTitle>
+            <CardDescription className="mt-1 text-muted-foreground">
+              Sign in to manage content, SEO, forms and more.
+            </CardDescription>
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -49,7 +56,7 @@ const AdminLogin = () => {
             )}
 
             <div className="space-y-1.5">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-foreground/80">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -58,11 +65,12 @@ const AdminLogin = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="bg-secondary/50 border-border/60 text-foreground placeholder:text-muted-foreground/60"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-foreground/80">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -71,6 +79,7 @@ const AdminLogin = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="bg-secondary/50 border-border/60 text-foreground placeholder:text-muted-foreground/60"
               />
             </div>
 
@@ -85,4 +94,3 @@ const AdminLogin = () => {
 };
 
 export default AdminLogin;
-
