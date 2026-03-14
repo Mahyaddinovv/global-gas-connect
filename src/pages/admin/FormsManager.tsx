@@ -84,13 +84,8 @@ const FormsManager = () => {
 
       let auditFailed = false;
       try {
-        await createAuditLog({
-          action: `Updated contact form settings (${lang})`,
-          section: "forms",
-        });
-      } catch {
-        auditFailed = true;
-      }
+        await createAuditLog({ action: `Updated contact form settings (${lang})`, section: "forms" });
+      } catch { auditFailed = true; }
 
       toast({
         title: "Form saved",
@@ -100,67 +95,40 @@ const FormsManager = () => {
       });
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Unknown error";
-      toast({
-        variant: "destructive",
-        title: "Save failed",
-        description: message,
-      });
+      toast({ variant: "destructive", title: "Save failed", description: message });
     }
   };
 
   return (
-    <Card className="border-slate-800 bg-slate-900/80">
+    <Card className="border-border/60 bg-card">
       <CardHeader>
-        <CardTitle className="text-sm font-medium text-slate-100">Contact form fields</CardTitle>
+        <CardTitle className="text-sm font-medium text-foreground/80">Contact form fields</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {isLoading && <p className="text-xs text-slate-400">Loading form configuration...</p>}
+        {isLoading && <p className="text-xs text-muted-foreground">Loading form configuration...</p>}
         <div className="space-y-3">
           {fields.map((field, index) => (
             <div
               key={field.id}
-              className="flex flex-col gap-2 rounded-md border border-slate-800/80 bg-slate-950/80 p-3 text-sm md:flex-row md:items-center"
+              className="flex flex-col gap-2 rounded-lg border border-border/40 bg-secondary/30 p-3 text-sm md:flex-row md:items-center"
             >
               <div className="flex flex-1 flex-col gap-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono text-slate-400">{field.field_key}</span>
+                  <span className="text-xs font-mono text-muted-foreground">{field.field_key}</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-300">Required</span>
-                    <Switch
-                      checked={field.required}
-                      onCheckedChange={(value) => updateField(field.id, { required: value === true })}
-                    />
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-7 w-7"
-                      onClick={() => moveField(index, -1)}
-                      disabled={index === 0}
-                    >
+                    <span className="text-xs text-foreground/60">Required</span>
+                    <Switch checked={field.required} onCheckedChange={(value) => updateField(field.id, { required: value === true })} />
+                    <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => moveField(index, -1)} disabled={index === 0}>
                       <ArrowUp className="h-4 w-4" />
                     </Button>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-7 w-7"
-                      onClick={() => moveField(index, 1)}
-                      disabled={index === fields.length - 1}
-                    >
+                    <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => moveField(index, 1)} disabled={index === fields.length - 1}>
                       <ArrowDown className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
                 <div className="grid gap-2 md:grid-cols-2">
-                  <Input
-                    value={field.label}
-                    onChange={(event) => updateField(field.id, { label: event.target.value })}
-                    placeholder="Label"
-                  />
-                  <Input
-                    value={field.placeholder}
-                    onChange={(event) => updateField(field.id, { placeholder: event.target.value })}
-                    placeholder="Placeholder"
-                  />
+                  <Input value={field.label} onChange={(event) => updateField(field.id, { label: event.target.value })} placeholder="Label" />
+                  <Input value={field.placeholder} onChange={(event) => updateField(field.id, { placeholder: event.target.value })} placeholder="Placeholder" />
                 </div>
               </div>
             </div>
@@ -176,18 +144,12 @@ const FormsManager = () => {
 
 const defaultLabel = (key: string) => {
   switch (key) {
-    case "company":
-      return "Company Name";
-    case "contactPerson":
-      return "Contact Person";
-    case "email":
-      return "Email";
-    case "message":
-      return "Message";
-    case "consent":
-      return "Consent";
-    default:
-      return key;
+    case "company": return "Company Name";
+    case "contactPerson": return "Contact Person";
+    case "email": return "Email";
+    case "message": return "Message";
+    case "consent": return "Consent";
+    default: return key;
   }
 };
 

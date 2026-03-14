@@ -26,17 +26,10 @@ const SeoManager = () => {
   const handleSave = async () => {
     try {
       await mutateAsync({ title, meta_description: description });
-
       let auditFailed = false;
       try {
-        await createAuditLog({
-          action: "Updated home SEO settings",
-          section: "seo",
-        });
-      } catch {
-        auditFailed = true;
-      }
-
+        await createAuditLog({ action: "Updated home SEO settings", section: "seo" });
+      } catch { auditFailed = true; }
       toast({
         title: "SEO saved",
         description: auditFailed
@@ -45,43 +38,24 @@ const SeoManager = () => {
       });
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Unknown error";
-      toast({
-        variant: "destructive",
-        title: "Save failed",
-        description: message,
-      });
+      toast({ variant: "destructive", title: "Save failed", description: message });
     }
   };
 
   return (
-    <Card className="border-slate-800 bg-slate-900/80">
+    <Card className="border-border/60 bg-card">
       <CardHeader>
-        <CardTitle className="text-sm font-medium text-slate-100">Home page SEO (slug=&quot;home&quot;)</CardTitle>
+        <CardTitle className="text-sm font-medium text-foreground/80">Home page SEO (slug=&quot;home&quot;)</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {isLoading && <p className="text-xs text-slate-400">Loading SEO settings...</p>}
+        {isLoading && <p className="text-xs text-muted-foreground">Loading SEO settings...</p>}
         <div className="space-y-2">
-          <label className="block text-xs font-medium text-slate-200" htmlFor="seo-title">
-            Page title
-          </label>
-          <Input
-            id="seo-title"
-            value={title}
-            onChange={(event) => setTitle(event.target.value)}
-            placeholder="Home page title"
-          />
+          <label className="block text-xs font-medium text-foreground/70" htmlFor="seo-title">Page title</label>
+          <Input id="seo-title" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Home page title" />
         </div>
         <div className="space-y-2">
-          <label className="block text-xs font-medium text-slate-200" htmlFor="seo-description">
-            Meta description
-          </label>
-          <Textarea
-            id="seo-description"
-            rows={3}
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-            placeholder="Short description shown in search results"
-          />
+          <label className="block text-xs font-medium text-foreground/70" htmlFor="seo-description">Meta description</label>
+          <Textarea id="seo-description" rows={3} value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Short description shown in search results" />
         </div>
         <Button onClick={() => void handleSave()} disabled={isPending}>
           {isPending ? "Saving..." : "Save SEO"}

@@ -89,21 +89,21 @@ const ContentManager = () => {
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-slate-50">Content sections</h2>
-          <p className="text-xs text-slate-400">Edit hero, about, offers and contact texts for each language.</p>
+          <h2 className="text-lg font-semibold text-foreground">Content sections</h2>
+          <p className="text-xs text-muted-foreground">Edit hero, about, offers and contact texts for each language.</p>
         </div>
-        <div className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/80 px-2 py-1">
-          <span className="text-xs text-slate-400">Language</span>
+        <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-secondary/50 px-3 py-1.5">
+          <span className="text-xs text-muted-foreground">Language</span>
           <div className="flex gap-1">
             {CMS_LANGS.map((lang) => (
               <Button
                 key={lang}
                 size="sm"
                 variant={language === lang ? "default" : "ghost"}
-                className={`h-7 px-2 text-xs ${
+                className={`h-7 px-2.5 text-xs ${
                   language === lang
-                    ? "bg-sky-500 text-slate-900 hover:bg-sky-400"
-                    : "text-slate-200 hover:text-slate-50"
+                    ? ""
+                    : "text-foreground/70 hover:text-foreground"
                 }`}
                 onClick={() => setLanguage(lang)}
               >
@@ -115,17 +115,17 @@ const ContentManager = () => {
       </div>
 
       {isLoading && (
-        <Card className="border-slate-800 bg-slate-900/60">
-          <CardContent className="py-10 text-center text-sm text-slate-400">Loading content from Supabase...</CardContent>
+        <Card className="border-border/60 bg-card">
+          <CardContent className="py-10 text-center text-sm text-muted-foreground">Loading content from Supabase...</CardContent>
         </Card>
       )}
 
       {isError && (
-        <Card className="border-red-900/60 bg-red-950/40">
+        <Card className="border-destructive/30 bg-destructive/10">
           <CardHeader>
-            <CardTitle className="text-sm font-medium text-red-100">Error loading content</CardTitle>
+            <CardTitle className="text-sm font-medium text-destructive">Error loading content</CardTitle>
           </CardHeader>
-          <CardContent className="text-xs text-red-200">{(error as Error)?.message ?? "Unknown error"}</CardContent>
+          <CardContent className="text-xs text-destructive/80">{(error as Error)?.message ?? "Unknown error"}</CardContent>
         </Card>
       )}
 
@@ -135,27 +135,27 @@ const ContentManager = () => {
           const rows = bySection[section.id] ?? [];
 
           return (
-            <Card key={section.id} className="border-slate-700/80 bg-slate-900/80 text-slate-100 shadow-sm">
+            <Card key={section.id} className="border-border/60 bg-card">
               <CardHeader
                 className="flex cursor-pointer flex-row items-center justify-between space-y-0"
                 onClick={() => handleToggleSection(section.id)}
               >
                 <div className="flex items-center gap-2">
                   {openSections[section.id] ? (
-                    <ChevronDown className="h-4 w-4 text-slate-400" />
+                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
                   ) : (
-                    <ChevronRight className="h-4 w-4 text-slate-400" />
+                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
                   )}
-                  <CardTitle className="text-sm font-medium text-slate-100">{section.label}</CardTitle>
+                  <CardTitle className="text-sm font-medium text-foreground">{section.label}</CardTitle>
                 </div>
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-muted-foreground">
                   {rows.length} key{rows.length === 1 ? "" : "s"}
                 </span>
               </CardHeader>
               {openSections[section.id] && (
                 <CardContent className="space-y-3">
                   {rows.length === 0 && (
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-muted-foreground">
                       No rows found for this section and language. Create rows in the `cms_content` table with
                       section="{section.id}" and language="{language}".
                     </p>
@@ -167,11 +167,11 @@ const ContentManager = () => {
                     return (
                       <div
                         key={row.id}
-                        className="flex flex-col gap-1 rounded-md border border-slate-800/80 bg-slate-950/80 p-3 md:flex-row md:items-center md:gap-3"
+                        className="flex flex-col gap-1 rounded-lg border border-border/40 bg-secondary/30 p-3 md:flex-row md:items-center md:gap-3"
                       >
                         <div className="w-full md:w-1/4">
-                          <div className="text-xs font-mono text-slate-200">{row.key}</div>
-                          <div className="text-[10px] uppercase tracking-wide text-slate-500">
+                          <div className="text-xs font-mono text-foreground/80">{row.key}</div>
+                          <div className="text-[10px] uppercase tracking-wide text-muted-foreground/70">
                             {section.id} · {language}
                           </div>
                         </div>
@@ -179,7 +179,7 @@ const ContentManager = () => {
                           <Input
                             value={currentValue}
                             onChange={(event) => handleChangeValue(row.id, event.target.value)}
-                            className="w-full bg-slate-950/80 text-sm"
+                            className="w-full bg-background/50 text-sm"
                           />
                           <Button
                             size="sm"

@@ -16,20 +16,14 @@ const LanguagesManager = () => {
     () =>
       ALL_LANGS.map((code) => {
         const row = data?.find((entry) => entry.code.toUpperCase() === code);
-        return {
-          id: row?.id ?? crypto.randomUUID(),
-          code,
-          enabled: row?.enabled ?? true,
-        };
+        return { id: row?.id ?? crypto.randomUUID(), code, enabled: row?.enabled ?? true };
       }),
     [data],
   );
 
   const [rows, setRows] = useState(initial);
 
-  useEffect(() => {
-    setRows(initial);
-  }, [initial]);
+  useEffect(() => { setRows(initial); }, [initial]);
 
   const toggleLang = (code: string, enabled: boolean) => {
     setRows((prev) => prev.map((row) => (row.code === code ? { ...row, enabled } : row)));
@@ -38,17 +32,10 @@ const LanguagesManager = () => {
   const handleSave = async () => {
     try {
       await mutateAsync(rows);
-
       let auditFailed = false;
       try {
-        await createAuditLog({
-          action: "Updated language availability",
-          section: "languages",
-        });
-      } catch {
-        auditFailed = true;
-      }
-
+        await createAuditLog({ action: "Updated language availability", section: "languages" });
+      } catch { auditFailed = true; }
       toast({
         title: "Languages updated",
         description: auditFailed
@@ -57,30 +44,26 @@ const LanguagesManager = () => {
       });
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Unknown error";
-      toast({
-        variant: "destructive",
-        title: "Save failed",
-        description: message,
-      });
+      toast({ variant: "destructive", title: "Save failed", description: message });
     }
   };
 
   return (
-    <Card className="border-slate-800 bg-slate-900/80">
+    <Card className="border-border/60 bg-card">
       <CardHeader>
-        <CardTitle className="text-sm font-medium text-slate-100">Languages</CardTitle>
+        <CardTitle className="text-sm font-medium text-foreground/80">Languages</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {isLoading && <p className="text-xs text-slate-400">Loading languages...</p>}
+        {isLoading && <p className="text-xs text-muted-foreground">Loading languages...</p>}
         <div className="space-y-3">
           {rows.map((row) => (
             <div
               key={row.code}
-              className="flex items-center justify-between rounded-md border border-slate-800/80 bg-slate-950/80 px-3 py-2 text-sm"
+              className="flex items-center justify-between rounded-lg border border-border/40 bg-secondary/30 px-3 py-2.5 text-sm"
             >
               <div>
-                <div className="font-medium text-slate-100">{row.code}</div>
-                <div className="text-xs text-slate-400">
+                <div className="font-medium text-foreground">{row.code}</div>
+                <div className="text-xs text-muted-foreground">
                   {row.enabled ? "Visible in language switcher" : "Hidden from language switcher"}
                 </div>
               </div>

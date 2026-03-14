@@ -79,13 +79,8 @@ const MenuManager = () => {
 
       let auditFailed = false;
       try {
-        await createAuditLog({
-          action: `Updated menu settings (${lang})`,
-          section: "menu",
-        });
-      } catch {
-        auditFailed = true;
-      }
+        await createAuditLog({ action: `Updated menu settings (${lang})`, section: "menu" });
+      } catch { auditFailed = true; }
 
       toast({
         title: "Menu saved",
@@ -95,64 +90,39 @@ const MenuManager = () => {
       });
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Unknown error";
-      toast({
-        variant: "destructive",
-        title: "Save failed",
-        description: message,
-      });
+      toast({ variant: "destructive", title: "Save failed", description: message });
     }
   };
 
   return (
-    <Card className="border-slate-800 bg-slate-900/80">
+    <Card className="border-border/60 bg-card">
       <CardHeader>
-        <CardTitle className="text-sm font-medium text-slate-100">Main navigation</CardTitle>
+        <CardTitle className="text-sm font-medium text-foreground/80">Main navigation</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {isLoading && <p className="text-xs text-slate-400">Loading menu...</p>}
+        {isLoading && <p className="text-xs text-muted-foreground">Loading menu...</p>}
         <div className="space-y-3">
           {items.map((item, index) => (
             <div
               key={item.id}
-              className="flex items-center gap-3 rounded-md border border-slate-800/80 bg-slate-950/80 px-3 py-2 text-sm"
+              className="flex items-center gap-3 rounded-lg border border-border/40 bg-secondary/30 px-3 py-2.5 text-sm"
             >
               <div className="flex flex-1 flex-col gap-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono text-slate-400">{item.key}</span>
+                  <span className="text-xs font-mono text-muted-foreground">{item.key}</span>
                   <div className="flex items-center gap-1">
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-7 w-7"
-                      onClick={() => moveItem(index, -1)}
-                      disabled={index === 0}
-                    >
+                    <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => moveItem(index, -1)} disabled={index === 0}>
                       <ArrowUp className="h-4 w-4" />
                     </Button>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-7 w-7"
-                      onClick={() => moveItem(index, 1)}
-                      disabled={index === items.length - 1}
-                    >
+                    <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => moveItem(index, 1)} disabled={index === items.length - 1}>
                       <ArrowDown className="h-4 w-4" />
                     </Button>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-7 w-7"
-                      onClick={() => toggleVisible(item.id)}
-                    >
-                      {item.visible ? <Eye className="h-4 w-4 text-sky-400" /> : <EyeOff className="h-4 w-4 text-slate-500" />}
+                    <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => toggleVisible(item.id)}>
+                      {item.visible ? <Eye className="h-4 w-4 text-primary" /> : <EyeOff className="h-4 w-4 text-muted-foreground" />}
                     </Button>
                   </div>
                 </div>
-                <Input
-                  value={item.label}
-                  onChange={(event) => updateLabel(item.id, event.target.value)}
-                  className="h-8 text-xs"
-                />
+                <Input value={item.label} onChange={(event) => updateLabel(item.id, event.target.value)} className="h-8 text-xs" />
               </div>
             </div>
           ))}
@@ -167,14 +137,10 @@ const MenuManager = () => {
 
 const labelFromKey = (key: string) => {
   switch (key) {
-    case "about":
-      return "About";
-    case "offers":
-      return "What We Offer";
-    case "contact":
-      return "Contact";
-    default:
-      return key;
+    case "about": return "About";
+    case "offers": return "What We Offer";
+    case "contact": return "Contact";
+    default: return key;
   }
 };
 

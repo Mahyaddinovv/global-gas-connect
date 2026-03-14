@@ -49,47 +49,47 @@ const OverviewPanel = () => {
                 navigate(card.href);
               }
             }}
-            className="cursor-pointer border-slate-800 bg-slate-900/70 transition-colors hover:border-sky-500/40 hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500/60"
+            className="cursor-pointer border-border/60 bg-card transition-all hover:border-primary/40 hover:bg-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary/50"
           >
-            <CardHeader>
-              <CardTitle className="text-sm font-medium text-slate-300">{card.title}</CardTitle>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{card.title}</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
-              <p className="text-2xl font-semibold text-slate-50">{card.label}</p>
-              <p className="text-xs text-slate-400">{card.description}</p>
-              <p className="text-xs text-slate-500">
-                Last updated: <span className="text-slate-300">{formatDateTime(latestBySection.get(card.section))}</span>
+            <CardContent className="space-y-1.5">
+              <p className="text-lg font-semibold text-foreground">{card.label}</p>
+              <p className="text-xs text-muted-foreground">{card.description}</p>
+              <p className="text-xs text-muted-foreground/70">
+                Last updated: <span className="text-foreground/70">{formatDateTime(latestBySection.get(card.section))}</span>
               </p>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <Card className="border-slate-800 bg-slate-900/70">
+      <Card className="border-border/60 bg-card">
         <CardHeader>
-          <CardTitle className="text-sm font-medium text-slate-300">Recent Activity</CardTitle>
+          <CardTitle className="text-sm font-medium text-foreground/80">Recent Activity</CardTitle>
         </CardHeader>
         <CardContent>
-          {isLoading && <p className="text-sm text-slate-400">Loading activity...</p>}
-          {isError && <p className="text-sm text-red-300">{(error as Error)?.message ?? "Failed to load audit logs."}</p>}
+          {isLoading && <p className="text-sm text-muted-foreground">Loading activity...</p>}
+          {isError && <p className="text-sm text-destructive">{(error as Error)?.message ?? "Failed to load audit logs."}</p>}
           {!isLoading && !isError && recentActivity.length === 0 && (
-            <p className="text-sm text-slate-400">No audit activity recorded yet.</p>
+            <p className="text-sm text-muted-foreground">No audit activity recorded yet.</p>
           )}
           {!isLoading && !isError && recentActivity.length > 0 && (
             <Table>
               <TableHeader>
-                <TableRow className="border-slate-800 hover:bg-transparent">
-                  <TableHead className="text-slate-400">Who</TableHead>
-                  <TableHead className="text-slate-400">What</TableHead>
-                  <TableHead className="text-slate-400">When</TableHead>
+                <TableRow className="border-border/40 hover:bg-transparent">
+                  <TableHead className="text-muted-foreground">Who</TableHead>
+                  <TableHead className="text-muted-foreground">What</TableHead>
+                  <TableHead className="text-muted-foreground">When</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {recentActivity.map((row) => (
-                  <TableRow key={row.id} className="border-slate-800 hover:bg-slate-800/20">
-                    <TableCell className="text-slate-200">{row.user_email}</TableCell>
-                    <TableCell className="text-slate-200">{row.action}</TableCell>
-                    <TableCell className="text-slate-400">{formatDateTime(row.changed_at)}</TableCell>
+                  <TableRow key={row.id} className="border-border/30 hover:bg-secondary/30">
+                    <TableCell className="text-foreground/90">{row.user_email}</TableCell>
+                    <TableCell className="text-foreground/90">{row.action}</TableCell>
+                    <TableCell className="text-muted-foreground">{formatDateTime(row.changed_at)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
