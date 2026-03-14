@@ -50,7 +50,7 @@ const UsersManager = () => {
       const { error: authError } = await supabase.auth.admin.inviteUserByEmail(inviteEmail);
       if (authError) throw authError;
 
-      const { error: insertError } = await supabase.from("cms_users").insert({ email: inviteEmail, role: inviteRole });
+      const { error: insertError } = await (supabase.from("cms_users") as any).insert({ email: inviteEmail, role: inviteRole });
       if (insertError) throw insertError;
 
       setInviteEmail("");
