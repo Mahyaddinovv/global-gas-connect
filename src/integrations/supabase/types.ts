@@ -14,6 +14,230 @@ export type Database = {
   }
   public: {
     Tables: {
+      cms_audit: {
+        Row: {
+          action: string | null
+          changed_at: string | null
+          id: string
+          section: string | null
+          user_email: string | null
+        }
+        Insert: {
+          action?: string | null
+          changed_at?: string | null
+          id?: string
+          section?: string | null
+          user_email?: string | null
+        }
+        Update: {
+          action?: string | null
+          changed_at?: string | null
+          id?: string
+          section?: string | null
+          user_email?: string | null
+        }
+        Relationships: []
+      }
+      cms_blocks: {
+        Row: {
+          alignment: string
+          bg_type: string
+          bg_value: string
+          id: string
+          order: number
+          padding: number
+          section: string
+          updated_at: string | null
+          updated_by: string | null
+          visible: boolean
+        }
+        Insert: {
+          alignment?: string
+          bg_type?: string
+          bg_value?: string
+          id?: string
+          order?: number
+          padding?: number
+          section: string
+          updated_at?: string | null
+          updated_by?: string | null
+          visible?: boolean
+        }
+        Update: {
+          alignment?: string
+          bg_type?: string
+          bg_value?: string
+          id?: string
+          order?: number
+          padding?: number
+          section?: string
+          updated_at?: string | null
+          updated_by?: string | null
+          visible?: boolean
+        }
+        Relationships: []
+      }
+      cms_content: {
+        Row: {
+          id: string
+          key: string
+          language: string | null
+          section: string
+          updated_at: string | null
+          updated_by: string | null
+          value: string | null
+        }
+        Insert: {
+          id?: string
+          key: string
+          language?: string | null
+          section: string
+          updated_at?: string | null
+          updated_by?: string | null
+          value?: string | null
+        }
+        Update: {
+          id?: string
+          key?: string
+          language?: string | null
+          section?: string
+          updated_at?: string | null
+          updated_by?: string | null
+          value?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cms_content_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "cms_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cms_forms: {
+        Row: {
+          field_key: string
+          id: string
+          label: string | null
+          language: string
+          placeholder: string | null
+          position: number
+          required: boolean
+        }
+        Insert: {
+          field_key: string
+          id?: string
+          label?: string | null
+          language: string
+          placeholder?: string | null
+          position: number
+          required?: boolean
+        }
+        Update: {
+          field_key?: string
+          id?: string
+          label?: string | null
+          language?: string
+          placeholder?: string | null
+          position?: number
+          required?: boolean
+        }
+        Relationships: []
+      }
+      cms_languages: {
+        Row: {
+          code: string
+          enabled: boolean
+          id: string
+        }
+        Insert: {
+          code: string
+          enabled?: boolean
+          id?: string
+        }
+        Update: {
+          code?: string
+          enabled?: boolean
+          id?: string
+        }
+        Relationships: []
+      }
+      cms_menu: {
+        Row: {
+          id: string
+          key: string
+          label: string
+          language: string
+          position: number
+          visible: boolean
+        }
+        Insert: {
+          id?: string
+          key: string
+          label: string
+          language: string
+          position: number
+          visible?: boolean
+        }
+        Update: {
+          id?: string
+          key?: string
+          label?: string
+          language?: string
+          position?: number
+          visible?: boolean
+        }
+        Relationships: []
+      }
+      cms_pages: {
+        Row: {
+          id: string
+          language: string
+          meta_description: string | null
+          slug: string
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          language?: string
+          meta_description?: string | null
+          slug: string
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          language?: string
+          meta_description?: string | null
+          slug?: string
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      cms_users: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          role: string
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id: string
+          role?: string
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          role?: string
+        }
+        Relationships: []
+      }
       inquiries: {
         Row: {
           company_name: string
