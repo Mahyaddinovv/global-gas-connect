@@ -1,0 +1,27 @@
+Student: Mahammad Mahyaddinov
+Team Slug: TeamMaga
+
+Live URL: https://global-gas-connect.vercel.app
+Repo URL: https://github.com/Mahyadinovv/global-gas-connect
+
+Stack:
+- React + Vite (frontend)
+- Supabase (database, auth, edge functions)
+- Resend (email notifications)
+- Vercel (deployment)
+- Tailwind CSS (styling)
+
+How to open the CMS:
+- Go to https://global-gas-connect.vercel.app/admin
+- Log in with instructor credentials (shared privately)
+
+Where the public site reads CMS configuration from:
+- All content is read from Supabase tables: cms_content, cms_blocks, cms_menu, cms_languages, cms_forms, cms_pages
+
+Where inquiries are stored:
+- Supabase table: inquiries (project: https://nuadzdchfznhseususb.supabase.co)
+
+Where Resend integration lives:
+- supabase/functions/send-inquiry-email/index.ts
+
+Note: No passwords or secrets are published in this file.

@@ -1,73 +1,205 @@
-# Welcome to your Lovable project
+# Global Gas Connect
 
-## Project info
+## Project Overview
+Global Gas Connect is a B2B website for a refrigerant gas trading company. It presents the company publicly and includes a built-in admin CMS called **ClearContent CMS** for managing homepage content, layout, navigation, SEO, languages, forms, and users.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+The public website and the CMS both use Supabase as the main backend. Content and configuration are stored in database tables, so non-developers can update the site without editing code.
 
-## How can I edit this code?
+## Live URLs
+- Public site: `https://global-gas-connect.vercel.app`
+- CMS login: `https://global-gas-connect.vercel.app/admin`
 
-There are several ways of editing your application.
+## Tech Stack
+- React
+- Vite
+- TypeScript
+- Tailwind CSS
+- Supabase
+- Resend
+- Vercel
 
-**Use Lovable**
+## How To Run Locally
+1. Clone the repository:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+```bash
+git clone https://github.com/Mahyadinovv/global-gas-connect.git
+cd global-gas-connect
+```
 
-Changes made via Lovable will be committed automatically to this repo.
+2. Install dependencies:
 
-**Use your preferred IDE**
+```bash
+npm install
+```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+3. Start the development server:
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+4. Open the local app in your browser. Vite will show the local URL in the terminal, usually `http://localhost:5173`.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Environment Variables
+For the current frontend setup, no local `.env` file is required to start the site because the Supabase project URL and publishable key are already configured in the frontend source.
 
-**Use GitHub Codespaces**
+However, the full system still depends on backend secrets in Supabase:
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `RESEND_API_KEY`
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+These are used by the Supabase Edge Function for email sending and should be configured in the Supabase project, not committed to the repository.
 
-## What technologies are used for this project?
+## CMS Guide
+Go to `/admin` and sign in with a valid CMS user from Supabase Auth and the `cms_users` table.
 
-This project is built with:
+### Overview
+The Overview page gives a quick summary of the CMS system:
+- Section cards link directly to each admin area
+- Last updated times are shown per section
+- Recent Activity shows the last 10 audit log entries
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Content
+The Content section is for text editing across the main homepage sections:
+- Hero
+- About
+- What We Offer
+- Contact
 
-## How can I deploy this project?
+How to use it:
+- Choose a language
+- Expand a section
+- Edit a text field
+- Click `Save`
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+### Builder
+The Builder section controls homepage layout blocks:
+- Hero
+- About
+- What We Offer
+- Contact
 
-## Can I connect a custom domain to my Lovable project?
+How to use it:
+- Reorder blocks with drag and drop or up/down buttons
+- Hide or show sections
+- Change background style
+- Set text alignment
+- Set top and bottom padding
 
-Yes, you can!
+### Menu
+The Menu section manages navigation items for the public navbar.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+How to use it:
+- Edit labels per language
+- Reorder menu items
+- Hide or show items
+- Save changes
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+### Forms
+The Forms section controls the contact form structure.
+
+How to use it:
+- Reorder fields
+- Edit labels
+- Edit placeholders
+- Set required or optional fields
+
+### SEO
+The SEO section manages homepage metadata per language.
+
+How to use it:
+- Edit page title
+- Edit meta description
+- Save changes
+
+After refresh, the public site updates the browser title and main meta tags from these values.
+
+### Languages
+The Languages section controls which languages are available in the public language switcher.
+
+How to use it:
+- Enable or disable each language
+- Save changes
+
+### Users
+The Users section is for CMS user management.
+
+How to use it:
+- View CMS users
+- Invite new users
+- Assign roles
+- Remove users
+
+Role access:
+- `superadmin`: full access
+- `admin`: content/config access
+- `editor`: limited access, no user management
+
+## Public Site
+The public homepage reads content and configuration directly from Supabase tables.
+
+This includes:
+- homepage text content
+- section order and block styling
+- menu labels and visibility
+- enabled languages
+- contact form field structure
+- SEO title and description
+
+If a CMS table has no rows yet, the site falls back to built-in defaults where needed.
+
+### Language Switching
+The language switcher changes the active language in the React app. Based on the selected language, the site loads:
+- translated content rows from `cms_content`
+- menu rows from `cms_menu`
+- form configuration from `cms_forms`
+- SEO data from `cms_pages`
+
+The switcher only shows languages that are enabled in `cms_languages`.
+
+## Contact Form Pipeline
+When a visitor submits the contact form:
+1. The form is validated in the frontend
+2. The submission is inserted into the Supabase `inquiries` table
+3. The app calls the Supabase Edge Function at `supabase/functions/send-inquiry-email/index.ts`
+4. That function reads the saved inquiry from Supabase
+5. It sends an email notification through Resend
+
+This means the submission is stored in the database first, and the email notification is sent after that.
+
+## Supabase Tables Overview
+- `cms_content`: text content for homepage sections, stored per language
+- `cms_blocks`: page builder block order, visibility, background, alignment, and spacing
+- `cms_menu`: navigation labels, order, visibility, and language-specific menu settings
+- `cms_forms`: contact form field settings such as label, placeholder, required, and order
+- `cms_pages`: SEO data such as page title and meta description per slug and language
+- `cms_languages`: enabled and disabled language options for the public site
+- `cms_users`: CMS user roles and email mapping for admin access
+- `cms_audit`: audit trail of CMS changes, including who changed what and when
+- `inquiries`: public contact form submissions
+
+## Deployment
+The project is deployed on Vercel.
+
+Typical deployment flow:
+- Push changes to the GitHub repository
+- Vercel pulls from the main branch
+- Vercel builds and deploys the site automatically
+
+### Vercel Routing
+Because this is a single-page React app, the project includes `vercel.json` so routes like `/admin` work correctly on direct page loads.
+
+### Where To Add Environment Variables
+- Frontend deployment settings: Vercel project settings
+- Supabase Edge Function secrets: Supabase project settings
+
+For this project, email-related secrets belong in Supabase, not in the public frontend.
+
+## Watermarks And Assignment Info
+- Student name: **Mahammad Mahyaddinov**
+- Team slug: **TeamMaga**
+- Assignment: **ai-web-2026**
+
+## Notes
+- No passwords or secrets are stored in this README.
+- CMS activity is tracked through the audit log system in `cms_audit`.
+- The public assignment file is available at `public/ai-web-2026.txt`.
