@@ -49,6 +49,11 @@ serve(async (req) => {
       throw new Error("RESEND_API_KEY is not configured");
     }
 
+    const NOTIFICATION_EMAIL = Deno.env.get("NOTIFICATION_EMAIL");
+    if (!NOTIFICATION_EMAIL) {
+      throw new Error("NOTIFICATION_EMAIL is not configured");
+    }
+
     const emailHtml = `
       <h2>New Inquiry Received</h2>
       <p><strong>Inquiry ID:</strong> ${escHtml(inquiry.id)}</p>
@@ -67,7 +72,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         from: "onboarding@resend.dev",
-        to: ["onboarding@resend.dev"],
+        to: [NOTIFICATION_EMAIL],
         subject: "[AI-WEB-2026] TeamMaga",
         html: emailHtml,
       }),
