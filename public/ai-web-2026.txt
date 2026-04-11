@@ -2,7 +2,7 @@ Student: Mahammad Mahyaddinov
 Team Slug: TeamMaga
 
 Live URL: https://global-gas-connect.vercel.app
-Repo URL: https://github.com/Mahyadinovv/global-gas-connect
+Repo URL: https://github.com/Mahyaddinovv/global-gas-connect
 
 Stack:
 - React + Vite (frontend)
