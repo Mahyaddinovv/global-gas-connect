@@ -196,15 +196,17 @@ Flow:
 
 ## Architecture (Simplified)
 
-Frontend (React + Vite)
+Auth & Roles (Supabase Auth)
+        ↓
+Frontend (React + Vite + CMS UI)
+        ↓
+CMS Layer (ClearContent CMS logic)
         ↓
 Supabase API Layer
         ↓
-PostgreSQL Database + CMS Tables
+PostgreSQL Database (CMS + Business Data)
         ↓
-Edge Functions (Email + Automation)
-
----
+Edge Functions (Email automation via Resend)
 
 ## Vercel Routing
 
