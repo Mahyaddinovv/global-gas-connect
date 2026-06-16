@@ -110,7 +110,17 @@ It is designed specifically for real operational workflows, not generic business
 
 ## 🏗️ Architecture
 
-Frontend → Supabase API → PostgreSQL → Edge Functions → Resend (Email Automation)
+Frontend (React + CMS UI)
+↓
+Supabase Auth (RBAC)
+↓
+Supabase API Layer
+↓
+PostgreSQL (CMS + Business Data)
+↓
+Edge Functions (Automation)
+↓
+Resend (Email Service)
 
 ---
 
@@ -200,7 +210,7 @@ Secrets stored in Supabase:
 
 ## 📊 Product Research
 
-### User Feedback (Interview-Based Insights)
+### These insights were gathered through structured qualitative interviews.
 
 Feedback collected from:
 - Gas supplier manager
