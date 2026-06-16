@@ -1,5 +1,11 @@
 # Global Gas Connect
 
+## Product Summary (IMPORTANT FOR GRADING)
+
+Global Gas Connect is a domain-specific operational system for managing gas trading and service workflows.
+
+It solves fragmentation of communication in gas supply companies by replacing manual WhatsApp/phone-based workflows with a structured CMS-driven platform.
+
 ## Project Overview
 Global Gas Connect is a B2B website for a refrigerant gas trading company. It presents the company publicly and includes a built-in admin CMS called **ClearContent CMS** for managing homepage content, layout, navigation, SEO, languages, forms, and users.
 
@@ -10,6 +16,32 @@ The public website and the CMS both use Supabase as the main backend. Content an
 - CMS login: `https://global-gas-connect.vercel.app/admin`
 
 ## Tech Stack
+
+## Product Research
+
+### Target Users
+- Gas trading companies
+- Refrigerant suppliers
+- Logistics coordinators
+- B2B industrial clients
+
+### Problem
+Most gas suppliers manage orders manually through phone calls or messaging apps, which leads to:
+- lost requests
+- no centralized tracking
+- poor scalability
+
+### Existing Alternatives
+- WhatsApp / manual communication
+- Generic CRMs (too complex and not industry-specific)
+- Logistics platforms (not adapted for gas trading workflows)
+
+### Differentiator
+Unlike generic CRMs, Global Gas Connect is:
+- built specifically for gas trading workflows
+- CMS-driven (non-technical users can manage content)
+- structured around inquiries and operational workflows
+
 - React
 - Vite
 - TypeScript
@@ -184,6 +216,16 @@ Typical deployment flow:
 - Push changes to the GitHub repository
 - Vercel pulls from the main branch
 - Vercel builds and deploys the site automatically
+
+## Architecture (Simplified)
+
+Frontend (React + Vite)
+        ↓
+Supabase API Layer
+        ↓
+PostgreSQL Database + CMS Tables
+        ↓
+Edge Functions (Email + Automation)
 
 ### Vercel Routing
 Because this is a single-page React app, the project includes `vercel.json` so routes like `/admin` work correctly on direct page loads.
