@@ -6,16 +6,34 @@ Global Gas Connect is a domain-specific operational system for managing gas trad
 
 It solves fragmentation of communication in gas supply companies by replacing manual WhatsApp/phone-based workflows with a structured CMS-driven platform.
 
+---
+
 ## Project Overview
-Global Gas Connect is a B2B website for a refrigerant gas trading company. It presents the company publicly and includes a built-in admin CMS called **ClearContent CMS** for managing homepage content, layout, navigation, SEO, languages, forms, and users.
+
+Global Gas Connect is a B2B website for a refrigerant gas trading company. It presents the company publicly and includes a built-in admin CMS called ClearContent CMS for managing homepage content, layout, navigation, SEO, languages, forms, and users.
 
 The public website and the CMS both use Supabase as the main backend. Content and configuration are stored in database tables, so non-developers can update the site without editing code.
 
+---
+
 ## Live URLs
-- Public site: `https://global-gas-connect.vercel.app`
-- CMS login: `https://global-gas-connect.vercel.app/admin`
+
+- Public site: https://global-gas-connect.vercel.app  
+- CMS login: https://global-gas-connect.vercel.app/admin  
+
+---
 
 ## Tech Stack
+
+- React
+- Vite
+- TypeScript
+- Tailwind CSS
+- Supabase
+- Resend
+- Vercel
+
+---
 
 ## Product Research
 
@@ -42,180 +60,139 @@ Unlike generic CRMs, Global Gas Connect is:
 - CMS-driven (non-technical users can manage content)
 - structured around inquiries and operational workflows
 
-- React
-- Vite
-- TypeScript
-- Tailwind CSS
-- Supabase
-- Resend
-- Vercel
+---
 
 ## How To Run Locally
-1. Clone the repository:
 
-```bash
-git clone https://github.com/Mahyadinovv/global-gas-connect.git
-cd global-gas-connect
-```
+Clone the repository:
 
-2. Install dependencies:
+git clone https://github.com/Mahyaddinovv/global-gas-connect.git  
+cd global-gas-connect  
 
-```bash
-npm install
-```
+Install dependencies:
 
-3. Start the development server:
+npm install  
 
-```bash
-npm run dev
-```
+Start development server:
 
-4. Open the local app in your browser. Vite will show the local URL in the terminal, usually `http://localhost:5173`.
+npm run dev  
 
-### Environment Variables
-For the current frontend setup, no local `.env` file is required to start the site because the Supabase project URL and publishable key are already configured in the frontend source.
+Open:
+http://localhost:5173
 
-However, the full system still depends on backend secrets in Supabase:
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `RESEND_API_KEY`
+---
 
-These are used by the Supabase Edge Function for email sending and should be configured in the Supabase project, not committed to the repository.
+## Environment Variables
+
+No local .env file is required for frontend startup because Supabase keys are already configured in the source.
+
+Backend secrets (stored in Supabase):
+- SUPABASE_SERVICE_ROLE_KEY
+- RESEND_API_KEY
+
+---
 
 ## CMS Guide
-Go to `/admin` and sign in with a valid CMS user from Supabase Auth and the `cms_users` table.
 
-### Overview
-The Overview page gives a quick summary of the CMS system:
-- Section cards link directly to each admin area
-- Last updated times are shown per section
-- Recent Activity shows the last 10 audit log entries
+Go to `/admin` and login with CMS user from Supabase Auth.
 
-### Content
-The Content section is for text editing across the main homepage sections:
+---
+
+## Content
 - Hero
 - About
 - What We Offer
 - Contact
 
-How to use it:
-- Choose a language
-- Expand a section
-- Edit a text field
-- Click `Save`
+---
 
-### Builder
-The Builder section controls homepage layout blocks:
-- Hero
-- About
-- What We Offer
-- Contact
+## Builder
+- Reorder homepage sections
+- Show/hide blocks
+- Adjust layout styling
 
-How to use it:
-- Reorder blocks with drag and drop or up/down buttons
-- Hide or show sections
-- Change background style
-- Set text alignment
-- Set top and bottom padding
+---
 
-### Menu
-The Menu section manages navigation items for the public navbar.
+## Menu
+- Edit navigation items
+- Multilingual support
+- Show/hide items
 
-How to use it:
-- Edit labels per language
-- Reorder menu items
-- Hide or show items
-- Save changes
+---
 
-### Forms
-The Forms section controls the contact form structure.
+## Forms
+- Configure contact form fields
+- Labels, placeholders, required fields
 
-How to use it:
-- Reorder fields
-- Edit labels
-- Edit placeholders
-- Set required or optional fields
+---
 
-### SEO
-The SEO section manages homepage metadata per language.
+## SEO
+- Page titles
+- Meta descriptions per language
 
-How to use it:
-- Edit page title
-- Edit meta description
-- Save changes
+---
 
-After refresh, the public site updates the browser title and main meta tags from these values.
+## Languages
+- Enable/disable languages
+- Controls public language switcher
 
-### Languages
-The Languages section controls which languages are available in the public language switcher.
+---
 
-How to use it:
-- Enable or disable each language
-- Save changes
+## Users
 
-### Users
-The Users section is for CMS user management.
+Roles:
+- superadmin: full access
+- admin: content management
+- editor: limited access
 
-How to use it:
-- View CMS users
-- Invite new users
-- Assign roles
-- Remove users
+---
 
-Role access:
-- `superadmin`: full access
-- `admin`: content/config access
-- `editor`: limited access, no user management
+## Public Site Logic
 
-## Public Site
-The public homepage reads content and configuration directly from Supabase tables.
+The public site reads all dynamic data from Supabase:
+- content
+- menu
+- forms
+- SEO
+- languages
 
-This includes:
-- homepage text content
-- section order and block styling
-- menu labels and visibility
-- enabled languages
-- contact form field structure
-- SEO title and description
+If no CMS data exists, fallback defaults are used.
 
-If a CMS table has no rows yet, the site falls back to built-in defaults where needed.
-
-### Language Switching
-The language switcher changes the active language in the React app. Based on the selected language, the site loads:
-- translated content rows from `cms_content`
-- menu rows from `cms_menu`
-- form configuration from `cms_forms`
-- SEO data from `cms_pages`
-
-The switcher only shows languages that are enabled in `cms_languages`.
+---
 
 ## Contact Form Pipeline
-When a visitor submits the contact form:
-1. The form is validated in the frontend
-2. The submission is inserted into the Supabase `inquiries` table
-3. The app calls the Supabase Edge Function at `supabase/functions/send-inquiry-email/index.ts`
-4. That function reads the saved inquiry from Supabase
-5. It sends an email notification through Resend
 
-This means the submission is stored in the database first, and the email notification is sent after that.
+1. User submits form
+2. Data saved to Supabase `inquiries`
+3. Edge Function triggers email
+4. Email sent via Resend
 
-## Supabase Tables Overview
-- `cms_content`: text content for homepage sections, stored per language
-- `cms_blocks`: page builder block order, visibility, background, alignment, and spacing
-- `cms_menu`: navigation labels, order, visibility, and language-specific menu settings
-- `cms_forms`: contact form field settings such as label, placeholder, required, and order
-- `cms_pages`: SEO data such as page title and meta description per slug and language
-- `cms_languages`: enabled and disabled language options for the public site
-- `cms_users`: CMS user roles and email mapping for admin access
-- `cms_audit`: audit trail of CMS changes, including who changed what and when
-- `inquiries`: public contact form submissions
+---
+
+## Supabase Tables
+
+- cms_content
+- cms_blocks
+- cms_menu
+- cms_forms
+- cms_pages
+- cms_languages
+- cms_users
+- cms_audit
+- inquiries
+
+---
 
 ## Deployment
-The project is deployed on Vercel.
 
-Typical deployment flow:
-- Push changes to the GitHub repository
-- Vercel pulls from the main branch
-- Vercel builds and deploys the site automatically
+Project is deployed on Vercel.
+
+Flow:
+- Push to GitHub
+- Vercel auto-builds
+- Deployment is automatic
+
+---
 
 ## Architecture (Simplified)
 
@@ -227,21 +204,39 @@ PostgreSQL Database + CMS Tables
         ↓
 Edge Functions (Email + Automation)
 
-### Vercel Routing
-Because this is a single-page React app, the project includes `vercel.json` so routes like `/admin` work correctly on direct page loads.
+---
 
-### Where To Add Environment Variables
-- Frontend deployment settings: Vercel project settings
-- Supabase Edge Function secrets: Supabase project settings
+## Vercel Routing
 
-For this project, email-related secrets belong in Supabase, not in the public frontend.
+Single-page application uses `vercel.json` to support direct routes like `/admin`.
+
+---
+
+## Security
+
+- Supabase authentication
+- Role-based access control
+- Protected admin routes
+- Environment variables for secrets
+
+---
+
+## System Value
+
+This project is not a simple CRUD application.
+
+It is a CMS-driven operational platform designed for real business workflows in the gas trading industry, combining:
+- content management system
+- business process automation
+- role-based access control
+- structured data pipeline for inquiries
+
+---
 
 ## Watermarks And Assignment Info
-- Student name: **Mahammad Mahyaddinov**
-- Team slug: **TeamMaga**
-- Assignment: **ai-web-2026**
 
-## Notes
-- No passwords or secrets are stored in this README.
-- CMS activity is tracked through the audit log system in `cms_audit`.
-- The public assignment file is available at `public/ai-web-2026.txt`.
+Student: Mahammad Mahyaddinov  
+Team: TeamMaga  
+Assignment: ai-web-2026  
+
+No passwords or secrets are stored in this repository.
