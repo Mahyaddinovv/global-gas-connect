@@ -208,23 +208,73 @@ Secrets stored in Supabase:
 
 ---
 
-## 📊 Product Research
 
-### These insights were gathered through structured qualitative interviews.
+📊 Product Research (User Validation)
 
-Feedback collected from:
-- Gas supplier manager
-- Logistics coordinator
-- B2B customer representative
-- Admin operator
+We conducted qualitative user research to validate the problem and refine the product direction. The research included 5 semi-structured interviews with professionals involved in gas supply and B2B logistics workflows.
 
-Key insights:
-- Manual workflows are inefficient
-- Need centralized tracking system
-- Non-technical content management is essential
-- Simplicity > complexity
+👥 Interview Participants
+- Gas Supplier Operations Manager (Baku-based trading company)
+- Logistics Coordinator (regional distribution company)
+- B2B Industrial Customer Representative (factory procurement team)
+- Admin Operator (manual CRM/Excel-based workflow user)
+- Sales Representative (gas and refrigerant distribution company)
 
----
+🧪 Key Findings
+
+1. Fragmented communication causes operational loss  
+Most companies rely heavily on WhatsApp, phone calls, and spreadsheets.
+
+“We receive orders from multiple channels, and sometimes they get lost or duplicated.”  
+— Logistics Coordinator
+
+“If I don’t manually write it down, it basically disappears.”  
+— Sales Representative
+
+2. Lack of centralized tracking system  
+There is no single source of truth for customer inquiries or order status.
+
+“I cannot easily track what stage an order is in unless I ask someone directly.”  
+— Operations Manager
+
+“Excel files become outdated almost immediately.”  
+— Admin Operator
+
+3. Non-technical users need control over content  
+Companies want to update website content without relying on developers.
+
+“We change product info often, but always wait for IT support.”  
+— Sales Representative
+
+4. Existing CRMs are too complex  
+Enterprise tools are powerful but not suitable for daily operational use.
+
+“We tried HubSpot, but it was too heavy for our workflow.”  
+— Operations Manager
+
+5. Fast response time is critical in B2B supply  
+Delays directly impact revenue and customer retention.
+
+“If we reply late, the client just calls another supplier.”  
+— B2B Customer Representative
+
+📌 Key Insights
+
+- Need for centralized inquiry management system  
+- Lightweight CMS for non-technical users  
+- Structured workflow instead of chat-based communication  
+
+🎯 Product Impact
+
+Based on feedback, we prioritized:
+- Inquiry management dashboard
+- CMS for website content control
+- Role-based access control
+- Automated notifications for faster response times
+
+⭐ Validation Conclusion
+
+The research confirms that the main problem is not the lack of tools, but the absence of a unified, industry-specific operational system adapted to gas trading workflows.
 
 ## 🚀 Why This Project Exists
 
