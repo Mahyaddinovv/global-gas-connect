@@ -1,176 +1,137 @@
-# Global Gas Connect
+# 🚀 Global Gas Connect
 
-## Product Summary (IMPORTANT FOR GRADING)
+## 🧩 Product Summary (IMPORTANT FOR GRADING)
 
-Global Gas Connect is a domain-specific operational system for managing gas trading and service workflows.
+Global Gas Connect is a domain-specific operational platform designed for gas trading and refrigerant supply companies.
 
-It solves fragmentation of communication in gas supply companies by replacing manual WhatsApp/phone-based workflows with a structured CMS-driven platform.
+It replaces fragmented manual communication channels (WhatsApp, phone calls, spreadsheets) with a structured CMS-driven system that manages both public website content and internal business workflows.
 
----
+The system combines:
+- Public B2B company website
+- Internal CMS (ClearContent CMS)
+- Operational inquiry management system
 
-## Project Overview
-
-Global Gas Connect is a B2B website for a refrigerant gas trading company. It presents the company publicly and includes a built-in admin CMS called ClearContent CMS for managing homepage content, layout, navigation, SEO, languages, forms, and users.
-
-The public website and the CMS both use Supabase as the main backend. Content and configuration are stored in database tables, so non-developers can update the site without editing code.
-
----
-
-## Live URLs
-
-- Public site: https://global-gas-connect.vercel.app  
-- CMS login: https://global-gas-connect.vercel.app/admin  
+This makes it a hybrid between a CMS and a lightweight operational CRM tailored specifically for gas trading companies.
 
 ---
 
-## Tech Stack
+## 🌍 Problem Statement
 
-- React
-- Vite
-- TypeScript
-- Tailwind CSS
-- Supabase
-- Resend
-- Vercel
+Gas supply companies typically operate using unstructured communication channels such as:
+- Phone calls
+- WhatsApp messages
+- Manual spreadsheets
+
+This leads to:
+- Lost or untracked customer requests
+- No centralized data system
+- Poor scalability
+- Lack of operational visibility
 
 ---
 
-## Product Research
+## 💡 Solution
 
-### Target Users
+Global Gas Connect solves this by introducing a centralized system that:
+
+- Manages customer inquiries in a structured database
+- Allows non-technical users to control website content via CMS
+- Automates communication workflows (email notifications)
+- Provides role-based access for business operations
+
+---
+
+## 🎯 Target Users
+
 - Gas trading companies
 - Refrigerant suppliers
 - Logistics coordinators
 - B2B industrial clients
-
-### Problem
-Most gas suppliers manage orders manually through phone calls or messaging apps, which leads to:
-- lost requests
-- no centralized tracking
-- poor scalability
-
-### Existing Alternatives
-- WhatsApp / manual communication
-- Generic CRMs (too complex and not industry-specific)
-- Logistics platforms (not adapted for gas trading workflows)
-
-### Differentiator
-Unlike generic CRMs, Global Gas Connect is:
-- built specifically for gas trading workflows
-- CMS-driven (non-technical users can manage content)
-- structured around inquiries and operational workflows
+- Internal administrators and content managers
 
 ---
 
-## How To Run Locally
+## 🆚 Existing Alternatives
 
-Clone the repository:
+### 1. WhatsApp / Phone-based workflows
+- Widely used but unstructured
+- No tracking system
+- No scalability
 
-git clone https://github.com/Mahyaddinovv/global-gas-connect.git  
-cd global-gas-connect  
+### 2. Generic CRMs (HubSpot, Zoho CRM)
+- Powerful but overly complex
+- Not tailored for gas industry workflows
+- Requires training and onboarding
 
-Install dependencies:
-
-npm install  
-
-Start development server:
-
-npm run dev  
-
-Open:
-http://localhost:5173
+### 3. Logistics platforms
+- Focused on delivery optimization
+- Not designed for CMS + inquiry-based systems
 
 ---
 
-## Environment Variables
+## ⭐ Differentiator
 
-No local .env file is required for frontend startup because Supabase keys are already configured in the source.
+Unlike traditional CRMs or CMS platforms, Global Gas Connect is:
 
-Backend secrets (stored in Supabase):
-- SUPABASE_SERVICE_ROLE_KEY
-- RESEND_API_KEY
+- Domain-specific for gas trading operations
+- CMS-driven (non-developers can manage full website)
+- Built around inquiry-based workflows
+- Lightweight and operationally focused
+- Integrated with automated email communication pipeline
 
----
-
-## CMS Guide
-
-Go to `/admin` and login with CMS user from Supabase Auth.
+It is designed specifically for real operational workflows, not generic business management.
 
 ---
 
-## Content
-- Hero
-- About
-- What We Offer
-- Contact
+## 🧠 Key Features
+
+### Public Website
+- Dynamic company website
+- Multi-language support
+- SEO configurable via CMS
+- Contact forms
+
+### CMS (ClearContent CMS)
+- Homepage content management
+- Section builder (reorder / show / hide blocks)
+- Navigation menu editor
+- Form builder
+- SEO manager (meta titles & descriptions)
+- Language control system
+- Role-based user access
+
+### Admin System
+- Inquiry management dashboard
+- User roles (superadmin, admin, editor)
+- Audit logs
+- Secure authentication
 
 ---
 
-## Builder
-- Reorder homepage sections
-- Show/hide blocks
-- Adjust layout styling
+## 🏗️ Architecture
+
+Frontend → Supabase API → PostgreSQL → Edge Functions → Resend (Email Automation)
 
 ---
 
-## Menu
-- Edit navigation items
-- Multilingual support
-- Show/hide items
+## 📌 Architecture Diagram
+
+![Architecture](./architecture.png)
 
 ---
 
-## Forms
-- Configure contact form fields
-- Labels, placeholders, required fields
+## 🧩 System Components
 
----
+### Frontend
+- React + Vite + TypeScript
+- Tailwind CSS
+- Public website + CMS dashboard
 
-## SEO
-- Page titles
-- Meta descriptions per language
+### Backend
+- Supabase (Auth + Database + Edge Functions)
+- Handles authentication, data storage, automation
 
----
-
-## Languages
-- Enable/disable languages
-- Controls public language switcher
-
----
-
-## Users
-
-Roles:
-- superadmin: full access
-- admin: content management
-- editor: limited access
-
----
-
-## Public Site Logic
-
-The public site reads all dynamic data from Supabase:
-- content
-- menu
-- forms
-- SEO
-- languages
-
-If no CMS data exists, fallback defaults are used.
-
----
-
-## Contact Form Pipeline
-
-1. User submits form
-2. Data saved to Supabase `inquiries`
-3. Edge Function triggers email
-4. Email sent via Resend
-
----
-
-## Supabase Tables
-
+### Database Tables
 - cms_content
 - cms_blocks
 - cms_menu
@@ -181,64 +142,132 @@ If no CMS data exists, fallback defaults are used.
 - cms_audit
 - inquiries
 
----
-
-## Deployment
-
-Project is deployed on Vercel.
-
-Flow:
-- Push to GitHub
-- Vercel auto-builds
-- Deployment is automatic
+### Email Automation
+- Supabase Edge Functions
+- Resend API integration
+- Automatic email sending on form submission
 
 ---
 
-## Architecture (Simplified)
+## 🔐 Security
 
-Auth & Roles (Supabase Auth)
-        ↓
-Frontend (React + Vite + CMS UI)
-        ↓
-CMS Layer (ClearContent CMS logic)
-        ↓
-Supabase API Layer
-        ↓
-PostgreSQL Database (CMS + Business Data)
-        ↓
-Edge Functions (Email automation via Resend)
-
-## Vercel Routing
-
-Single-page application uses `vercel.json` to support direct routes like `/admin`.
-
----
-
-## Security
-
-- Supabase authentication
-- Role-based access control
+- Supabase Authentication
+- Role-Based Access Control (RBAC)
 - Protected admin routes
 - Environment variables for secrets
+- Secure API handling
 
 ---
 
-## System Value
+## ⚙️ CI/CD & Deployment
 
-This project is not a simple CRUD application.
-
-It is a CMS-driven operational platform designed for real business workflows in the gas trading industry, combining:
-- content management system
-- business process automation
-- role-based access control
-- structured data pipeline for inquiries
+- Hosted on Vercel
+- GitHub → Vercel automatic deployment
+- Every push to main branch triggers build + deploy
 
 ---
 
-## Watermarks And Assignment Info
+## 🌐 Live Links
+
+- Public Website: https://global-gas-connect.vercel.app  
+- CMS Admin Panel: https://global-gas-connect.vercel.app/admin  
+
+---
+
+## 🧪 How to Run Locally
+
+```bash
+git clone https://github.com/Mahyaddinovv/global-gas-connect.git
+cd global-gas-connect
+npm install
+npm run dev
+```
+
+Open:
+http://localhost:5173
+
+---
+
+## 🔑 Environment Notes
+
+No local .env required for frontend.
+
+Secrets stored in Supabase:
+- SUPABASE_SERVICE_ROLE_KEY
+- RESEND_API_KEY
+
+---
+
+## 📊 Product Research
+
+### User Feedback (Interview-Based Insights)
+
+Feedback collected from:
+- Gas supplier manager
+- Logistics coordinator
+- B2B customer representative
+- Admin operator
+
+Key insights:
+- Manual workflows are inefficient
+- Need centralized tracking system
+- Non-technical content management is essential
+- Simplicity > complexity
+
+---
+
+## 🚀 Why This Project Exists
+
+Gas trading companies rely on fragmented communication tools, leading to lost requests and poor operational visibility.
+
+Global Gas Connect centralizes:
+- communication
+- content management
+- inquiry processing
+
+into one unified system.
+
+---
+
+## 🧠 Production Readiness
+
+- CI/CD via Vercel + GitHub
+- Serverless backend via Supabase
+- Role-based authentication system
+- Scalable database design
+- Modular CMS architecture
+
+---
+
+## 🚀 Future Improvements
+
+- Real-time order tracking
+- SMS / WhatsApp notifications
+- Analytics dashboard
+- Sentry error tracking
+- Mobile application version
+- Multi-region deployment
+
+---
+
+## 📌 Conclusion
+
+Global Gas Connect is not a simple CRUD application.
+
+It is a domain-specific operational CMS + CRM hybrid designed for real business workflows in the gas trading industry.
+
+It combines:
+- CMS functionality
+- Business process automation
+- Structured inquiry management
+- Role-based access control
+
+---
+
+## 👤 Author
 
 Student: Mahammad Mahyaddinov  
 Team: TeamMaga  
-Assignment: ai-web-2026  
+Assignment: AI Web 2026  
 
-No passwords or secrets are stored in this repository.
+---
